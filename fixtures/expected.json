@@ -1,0 +1,339 @@
+{
+  "basic": {
+    "as_of": "2026-11-16",
+    "summary": {
+      "days_logged": 16,
+      "mean_mood": 3.5,
+      "streak": 16
+    },
+    "patterns": {
+      "walk": {
+        "activity": "walk",
+        "label_th": "พาน้องเดิน",
+        "kind": "joy",
+        "n_with": 8,
+        "n_without": 8,
+        "status": "preliminary",
+        "mean_with": 4.38,
+        "mean_without": 2.63,
+        "diff": 1.75,
+        "diff_display": 1.8,
+        "direction": "higher",
+        "often_together": []
+      },
+      "play": {
+        "activity": "play",
+        "label_th": "เล่นกับน้อง",
+        "kind": "joy",
+        "n_with": 2,
+        "n_without": 14,
+        "status": "insufficient",
+        "need_more_with": 5,
+        "need_more_without": 0,
+        "often_together": [
+          {
+            "with": "walk",
+            "share": 1.0
+          }
+        ]
+      },
+      "cuddle": {
+        "activity": "cuddle",
+        "label_th": "นอนกอด/อยู่ใกล้น้อง",
+        "kind": "joy",
+        "n_with": 2,
+        "n_without": 14,
+        "status": "insufficient",
+        "need_more_with": 5,
+        "need_more_without": 0,
+        "often_together": []
+      },
+      "groom": {
+        "activity": "groom",
+        "label_th": "อาบน้ำ/แปรงขน",
+        "kind": "joy",
+        "n_with": 0,
+        "n_without": 16,
+        "status": "insufficient",
+        "need_more_with": 7,
+        "need_more_without": 0,
+        "often_together": []
+      },
+      "train": {
+        "activity": "train",
+        "label_th": "ฝึกน้อง",
+        "kind": "joy",
+        "n_with": 0,
+        "n_without": 16,
+        "status": "insufficient",
+        "need_more_with": 7,
+        "need_more_without": 0,
+        "often_together": []
+      },
+      "pet_sick": {
+        "activity": "pet_sick",
+        "label_th": "น้องป่วย/พาไปหาหมอ",
+        "kind": "burden",
+        "n_with": 1,
+        "n_without": 15,
+        "status": "insufficient",
+        "need_more_with": 6,
+        "need_more_without": 0,
+        "often_together": []
+      },
+      "night_wake": {
+        "activity": "night_wake",
+        "label_th": "ตื่นกลางคืนเพราะน้อง",
+        "kind": "burden",
+        "n_with": 2,
+        "n_without": 14,
+        "status": "insufficient",
+        "need_more_with": 5,
+        "need_more_without": 0,
+        "often_together": []
+      },
+      "pet_cost": {
+        "activity": "pet_cost",
+        "label_th": "มีค่าใช้จ่ายเรื่องน้อง",
+        "kind": "burden",
+        "n_with": 0,
+        "n_without": 16,
+        "status": "insufficient",
+        "need_more_with": 7,
+        "need_more_without": 0,
+        "often_together": []
+      }
+    },
+    "weekly": [
+      {
+        "week": 1,
+        "n": 7,
+        "mean_mood": 3.57
+      },
+      {
+        "week": 2,
+        "n": 7,
+        "mean_mood": 3.29
+      },
+      {
+        "week": 3,
+        "n": 2,
+        "mean_mood": 4.0
+      }
+    ],
+    "low_mood": {
+      "low_days_in_a_row": 0,
+      "gentle_card": false
+    }
+  },
+  "who5": {
+    "scores": [
+      {
+        "id": "good",
+        "result": {
+          "raw": 20,
+          "pct": 80,
+          "gentle_card": false
+        }
+      },
+      {
+        "id": "low",
+        "result": {
+          "raw": 10,
+          "pct": 40,
+          "gentle_card": true
+        }
+      },
+      {
+        "id": "edge_12",
+        "result": {
+          "raw": 12,
+          "pct": 48,
+          "gentle_card": false
+        }
+      },
+      {
+        "id": "edge_11",
+        "result": {
+          "raw": 11,
+          "pct": 44,
+          "gentle_card": true
+        }
+      },
+      {
+        "id": "zero",
+        "result": {
+          "raw": 0,
+          "pct": 0,
+          "gentle_card": true
+        }
+      },
+      {
+        "id": "out_of_range",
+        "error": "invalid"
+      },
+      {
+        "id": "too_few",
+        "error": "invalid"
+      }
+    ],
+    "due": [
+      {
+        "id": "never_taken",
+        "due": true
+      },
+      {
+        "id": "exactly_14",
+        "due": true
+      },
+      {
+        "id": "only_13",
+        "due": false
+      }
+    ]
+  },
+  "low_mood_case": {
+    "low_days_in_a_row": 5,
+    "gentle_card": true
+  },
+  "demo": {
+    "summary": {
+      "days_logged": 60,
+      "mean_mood": 3.33,
+      "streak": 60
+    },
+    "patterns": {
+      "walk": {
+        "activity": "walk",
+        "label_th": "พาน้องเดิน",
+        "kind": "joy",
+        "n_with": 36,
+        "n_without": 24,
+        "status": "more_data",
+        "mean_with": 3.61,
+        "mean_without": 2.92,
+        "diff": 0.69,
+        "diff_display": 0.7,
+        "direction": "higher",
+        "often_together": []
+      },
+      "play": {
+        "activity": "play",
+        "label_th": "เล่นกับน้อง",
+        "kind": "joy",
+        "n_with": 18,
+        "n_without": 42,
+        "status": "more_data",
+        "mean_with": 3.11,
+        "mean_without": 3.43,
+        "diff": -0.32,
+        "diff_display": 0.3,
+        "direction": "lower",
+        "often_together": [
+          {
+            "with": "walk",
+            "share": 0.72
+          }
+        ]
+      },
+      "cuddle": {
+        "activity": "cuddle",
+        "label_th": "นอนกอด/อยู่ใกล้น้อง",
+        "kind": "joy",
+        "n_with": 0,
+        "n_without": 60,
+        "status": "insufficient",
+        "need_more_with": 7,
+        "need_more_without": 0,
+        "often_together": []
+      },
+      "groom": {
+        "activity": "groom",
+        "label_th": "อาบน้ำ/แปรงขน",
+        "kind": "joy",
+        "n_with": 16,
+        "n_without": 44,
+        "status": "more_data",
+        "mean_with": 3.56,
+        "mean_without": 3.25,
+        "diff": 0.31,
+        "diff_display": 0.3,
+        "direction": "higher",
+        "often_together": []
+      },
+      "train": {
+        "activity": "train",
+        "label_th": "ฝึกน้อง",
+        "kind": "joy",
+        "n_with": 0,
+        "n_without": 60,
+        "status": "insufficient",
+        "need_more_with": 7,
+        "need_more_without": 0,
+        "often_together": []
+      },
+      "pet_sick": {
+        "activity": "pet_sick",
+        "label_th": "น้องป่วย/พาไปหาหมอ",
+        "kind": "burden",
+        "n_with": 0,
+        "n_without": 60,
+        "status": "insufficient",
+        "need_more_with": 7,
+        "need_more_without": 0,
+        "often_together": []
+      },
+      "night_wake": {
+        "activity": "night_wake",
+        "label_th": "ตื่นกลางคืนเพราะน้อง",
+        "kind": "burden",
+        "n_with": 8,
+        "n_without": 52,
+        "status": "preliminary",
+        "mean_with": 2.75,
+        "mean_without": 3.42,
+        "diff": -0.67,
+        "diff_display": 0.7,
+        "direction": "lower",
+        "often_together": []
+      },
+      "pet_cost": {
+        "activity": "pet_cost",
+        "label_th": "มีค่าใช้จ่ายเรื่องน้อง",
+        "kind": "burden",
+        "n_with": 0,
+        "n_without": 60,
+        "status": "insufficient",
+        "need_more_with": 7,
+        "need_more_without": 0,
+        "often_together": []
+      }
+    },
+    "who5": [
+      {
+        "taken_on": "2026-10-12",
+        "raw": 20,
+        "pct": 80,
+        "gentle_card": false
+      },
+      {
+        "taken_on": "2026-10-26",
+        "raw": 19,
+        "pct": 76,
+        "gentle_card": false
+      },
+      {
+        "taken_on": "2026-11-09",
+        "raw": 17,
+        "pct": 68,
+        "gentle_card": false
+      },
+      {
+        "taken_on": "2026-11-23",
+        "raw": 15,
+        "pct": 60,
+        "gentle_card": false
+      }
+    ]
+  }
+}

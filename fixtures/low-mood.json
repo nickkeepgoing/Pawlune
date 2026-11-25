@@ -1,0 +1,12 @@
+{
+  "_note": "5 low days (mood <= 2) in a row ending on as_of -> gentle card. The help button is ALWAYS visible regardless.",
+  "as_of": "2026-11-20",
+  "checkins": [
+    {"date": "2026-11-15", "mood": 3, "activities": [], "created_at": "2026-11-15T20:00:00+07:00"},
+    {"date": "2026-11-16", "mood": 2, "activities": [], "created_at": "2026-11-16T20:00:00+07:00"},
+    {"date": "2026-11-17", "mood": 1, "activities": ["pet_sick"], "created_at": "2026-11-17T20:00:00+07:00"},
+    {"date": "2026-11-18", "mood": 2, "activities": [], "created_at": "2026-11-18T20:00:00+07:00"},
+    {"date": "2026-11-19", "mood": 2, "activities": ["night_wake"], "created_at": "2026-11-19T20:00:00+07:00"},
+    {"date": "2026-11-20", "mood": 1, "activities": [], "created_at": "2026-11-20T20:00:00+07:00"}
+  ]
+}

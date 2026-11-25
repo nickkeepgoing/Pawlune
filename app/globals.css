@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+/* Paw Diary — "a small notebook next to the pet's bowl". Palette: docs/DESIGN_BRIEF.md (AA-checked). */
+@theme {
+  --color-cream: #f2eadb;
+  --color-paper: #fbf7ef;
+  --color-sage: #a9c3a0;
+  --color-sage-soft: #dfe8d8;
+  --color-jade: #4e6e58;
+  --color-jade-deep: #3d5847;
+  --color-bark: #6b4f3a;
+  --color-cocoa: #3e2d22;
+  --color-honey: #c99a5b;
+  --color-line: #e2d6c1;
+
+  --font-sans: var(--font-anuphan), ui-sans-serif, sans-serif;
+  --font-num: var(--font-fraunces), Georgia, serif;
+
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.875rem;
+  --text-3xl: 2.375rem;
+
+  --radius-card: 1.25rem;
+  --radius-chip: 999px;
+  --shadow-paper: 0 1px 0 #e7dcc8, 0 10px 24px -14px rgb(62 45 34 / 0.35);
+}
+
+html { background: var(--color-cream); }
+body {
+  color: var(--color-cocoa);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  /* faint paper grain */
+  background-color: var(--color-cream);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .31 0 0 0 0 .23 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+:focus-visible { outline: 3px solid var(--color-jade); outline-offset: 2px; border-radius: 6px; }
+
+.num { font-family: var(--font-num); font-variant-numeric: tabular-nums lining-nums; }
+
+.paper {
+  background: var(--color-paper);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-paper);
+}
+/* ruled-notebook strip used on headers/notes */
+.ruled {
+  background-image: repeating-linear-gradient(to bottom, transparent 0 1.9rem, var(--color-line) 1.9rem calc(1.9rem + 1px));
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  min-height: 48px; padding: 0 1.4rem; border-radius: var(--radius-chip);
+  font-weight: 600; transition: transform .15s ease, background .15s ease;
+}
+.btn:active { transform: translateY(1px) scale(.99); }
+.btn-primary { background: var(--color-jade); color: var(--color-cream); }
+.btn-primary:hover { background: var(--color-jade-deep); }
+.btn-primary:disabled { opacity: .55; }
+.btn-ghost { color: var(--color-cocoa); border: 1.5px solid var(--color-bark); background: transparent; }
+.btn-ghost:hover { background: #efe5d3; }
+
+.field {
+  width: 100%; min-height: 48px; padding: .6rem .9rem; border-radius: 12px;
+  border: 1.5px solid #cdbfa6; background: #fffdf8; color: var(--color-cocoa);
+}
+.field:focus-visible { border-color: var(--color-jade); }
+
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise .5s cubic-bezier(.2,.7,.2,1) both; }
+.rise-2 { animation-delay: .08s; } .rise-3 { animation-delay: .16s; } .rise-4 { animation-delay: .24s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+@media print {
+  body { background: white; }
+  .no-print { display: none !important; }
+  .paper { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+}

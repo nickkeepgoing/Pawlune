@@ -1,0 +1,17 @@
+{
+  "_note": "Each WHO-5 answer is 0..5 (5 = All of the time, 0 = At no time). raw = sum (0..25), pct = raw x 4.",
+  "score_cases": [
+    {"id": "good", "items": [5, 4, 4, 3, 4]},
+    {"id": "low", "items": [2, 2, 1, 2, 3]},
+    {"id": "edge_12", "items": [3, 3, 2, 2, 2]},
+    {"id": "edge_11", "items": [3, 2, 2, 2, 2]},
+    {"id": "zero", "items": [0, 0, 0, 0, 0]},
+    {"id": "out_of_range", "items": [6, 4, 4, 3, 4]},
+    {"id": "too_few", "items": [5, 4, 4, 3]}
+  ],
+  "due_cases": [
+    {"id": "never_taken", "last_taken": null, "today": "2026-11-16"},
+    {"id": "exactly_14", "last_taken": "2026-11-02", "today": "2026-11-16"},
+    {"id": "only_13", "last_taken": "2026-11-03", "today": "2026-11-16"}
+  ]
+}

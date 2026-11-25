@@ -1,0 +1,553 @@
+{
+ "_label": "DEMO — ข้อมูลจำลอง ไม่ใช่ข้อมูลผู้ใช้จริง",
+ "as_of": "2026-11-27",
+ "pet": {
+  "name": "ถั่วแดง",
+  "species": "dog",
+  "adopted_on": "2025-06-01"
+ },
+ "past_pets": [
+  {
+   "name": "มะขาม",
+   "species": "cat",
+   "period": "2018–2023",
+   "feeling": 4,
+   "tags": [
+    "อุ่นใจ",
+    "ผูกพัน"
+   ],
+   "memory_note": ""
+  }
+ ],
+ "checkins": [
+  {
+   "date": "2026-09-29",
+   "mood": 4,
+   "activities": [
+    "walk"
+   ],
+   "created_at": "2026-09-29T21:00:00+07:00"
+  },
+  {
+   "date": "2026-09-30",
+   "mood": 5,
+   "activities": [
+    "walk",
+    "groom"
+   ],
+   "created_at": "2026-09-30T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-01",
+   "mood": 4,
+   "activities": [
+    "walk"
+   ],
+   "created_at": "2026-10-01T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-02",
+   "mood": 2,
+   "activities": [],
+   "created_at": "2026-10-02T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-03",
+   "mood": 3,
+   "activities": [
+    "groom"
+   ],
+   "created_at": "2026-10-03T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-04",
+   "mood": 4,
+   "activities": [
+    "walk"
+   ],
+   "created_at": "2026-10-04T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-05",
+   "mood": 4,
+   "activities": [],
+   "created_at": "2026-10-05T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-06",
+   "mood": 3,
+   "activities": [],
+   "created_at": "2026-10-06T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-07",
+   "mood": 2,
+   "activities": [
+    "walk",
+    "play",
+    "groom"
+   ],
+   "created_at": "2026-10-07T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-08",
+   "mood": 3,
+   "activities": [
+    "walk"
+   ],
+   "created_at": "2026-10-08T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-09",
+   "mood": 3,
+   "activities": [
+    "groom"
+   ],
+   "created_at": "2026-10-09T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-10",
+   "mood": 3,
+   "activities": [],
+   "created_at": "2026-10-10T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-11",
+   "mood": 4,
+   "activities": [
+    "walk"
+   ],
+   "created_at": "2026-10-11T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-12",
+   "mood": 5,
+   "activities": [
+    "walk"
+   ],
+   "created_at": "2026-10-12T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-13",
+   "mood": 4,
+   "activities": [
+    "walk"
+   ],
+   "created_at": "2026-10-13T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-14",
+   "mood": 2,
+   "activities": [
+    "walk",
+    "night_wake"
+   ],
+   "created_at": "2026-10-14T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-15",
+   "mood": 4,
+   "activities": [],
+   "created_at": "2026-10-15T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-16",
+   "mood": 3,
+   "activities": [
+    "walk",
+    "play"
+   ],
+   "created_at": "2026-10-16T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-17",
+   "mood": 4,
+   "activities": [
+    "play"
+   ],
+   "created_at": "2026-10-17T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-18",
+   "mood": 4,
+   "activities": [
+    "play"
+   ],
+   "created_at": "2026-10-18T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-19",
+   "mood": 4,
+   "activities": [
+    "groom"
+   ],
+   "created_at": "2026-10-19T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-20",
+   "mood": 3,
+   "activities": [
+    "walk"
+   ],
+   "created_at": "2026-10-20T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-21",
+   "mood": 4,
+   "activities": [
+    "walk"
+   ],
+   "created_at": "2026-10-21T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-22",
+   "mood": 5,
+   "activities": [
+    "walk",
+    "play",
+    "groom"
+   ],
+   "created_at": "2026-10-22T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-23",
+   "mood": 4,
+   "activities": [
+    "walk"
+   ],
+   "created_at": "2026-10-23T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-24",
+   "mood": 4,
+   "activities": [
+    "walk",
+    "groom"
+   ],
+   "created_at": "2026-10-24T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-25",
+   "mood": 3,
+   "activities": [],
+   "created_at": "2026-10-25T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-26",
+   "mood": 3,
+   "activities": [
+    "play"
+   ],
+   "created_at": "2026-10-26T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-27",
+   "mood": 3,
+   "activities": [
+    "walk",
+    "play",
+    "groom"
+   ],
+   "created_at": "2026-10-27T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-28",
+   "mood": 3,
+   "activities": [
+    "walk",
+    "play"
+   ],
+   "created_at": "2026-10-28T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-29",
+   "mood": 4,
+   "activities": [
+    "walk"
+   ],
+   "created_at": "2026-10-29T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-30",
+   "mood": 4,
+   "activities": [
+    "walk"
+   ],
+   "created_at": "2026-10-30T21:00:00+07:00"
+  },
+  {
+   "date": "2026-10-31",
+   "mood": 3,
+   "activities": [],
+   "created_at": "2026-10-31T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-01",
+   "mood": 2,
+   "activities": [],
+   "created_at": "2026-11-01T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-02",
+   "mood": 3,
+   "activities": [
+    "walk"
+   ],
+   "created_at": "2026-11-02T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-03",
+   "mood": 5,
+   "activities": [
+    "walk",
+    "groom"
+   ],
+   "created_at": "2026-11-03T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-04",
+   "mood": 3,
+   "activities": [
+    "walk",
+    "night_wake"
+   ],
+   "created_at": "2026-11-04T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-05",
+   "mood": 3,
+   "activities": [
+    "play"
+   ],
+   "created_at": "2026-11-05T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-06",
+   "mood": 4,
+   "activities": [
+    "walk",
+    "night_wake"
+   ],
+   "created_at": "2026-11-06T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-07",
+   "mood": 3,
+   "activities": [],
+   "created_at": "2026-11-07T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-08",
+   "mood": 5,
+   "activities": [
+    "walk",
+    "groom"
+   ],
+   "created_at": "2026-11-08T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-09",
+   "mood": 3,
+   "activities": [
+    "walk",
+    "play",
+    "groom"
+   ],
+   "created_at": "2026-11-09T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-10",
+   "mood": 2,
+   "activities": [
+    "night_wake"
+   ],
+   "created_at": "2026-11-10T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-11",
+   "mood": 3,
+   "activities": [],
+   "created_at": "2026-11-11T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-12",
+   "mood": 4,
+   "activities": [
+    "walk",
+    "play",
+    "groom"
+   ],
+   "created_at": "2026-11-12T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-13",
+   "mood": 3,
+   "activities": [
+    "night_wake"
+   ],
+   "created_at": "2026-11-13T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-14",
+   "mood": 3,
+   "activities": [
+    "walk",
+    "play"
+   ],
+   "created_at": "2026-11-14T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-15",
+   "mood": 4,
+   "activities": [
+    "walk",
+    "night_wake"
+   ],
+   "created_at": "2026-11-15T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-16",
+   "mood": 2,
+   "activities": [
+    "groom"
+   ],
+   "created_at": "2026-11-16T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-17",
+   "mood": 2,
+   "activities": [
+    "groom"
+   ],
+   "created_at": "2026-11-17T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-18",
+   "mood": 3,
+   "activities": [
+    "walk",
+    "play",
+    "groom"
+   ],
+   "created_at": "2026-11-18T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-19",
+   "mood": 3,
+   "activities": [
+    "night_wake"
+   ],
+   "created_at": "2026-11-19T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-20",
+   "mood": 3,
+   "activities": [
+    "walk"
+   ],
+   "created_at": "2026-11-20T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-21",
+   "mood": 4,
+   "activities": [
+    "walk",
+    "play"
+   ],
+   "created_at": "2026-11-21T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-22",
+   "mood": 2,
+   "activities": [
+    "walk",
+    "play"
+   ],
+   "created_at": "2026-11-22T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-23",
+   "mood": 4,
+   "activities": [
+    "walk",
+    "play"
+   ],
+   "created_at": "2026-11-23T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-24",
+   "mood": 1,
+   "activities": [
+    "play",
+    "night_wake"
+   ],
+   "created_at": "2026-11-24T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-25",
+   "mood": 2,
+   "activities": [
+    "walk",
+    "play"
+   ],
+   "created_at": "2026-11-25T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-26",
+   "mood": 4,
+   "activities": [
+    "walk",
+    "groom"
+   ],
+   "created_at": "2026-11-26T21:00:00+07:00"
+  },
+  {
+   "date": "2026-11-27",
+   "mood": 3,
+   "activities": [],
+   "created_at": "2026-11-27T21:00:00+07:00"
+  }
+ ],
+ "who5": [
+  {
+   "taken_on": "2026-10-12",
+   "items": [
+    3,
+    3,
+    5,
+    5,
+    4
+   ]
+  },
+  {
+   "taken_on": "2026-10-26",
+   "items": [
+    4,
+    4,
+    4,
+    3,
+    4
+   ]
+  },
+  {
+   "taken_on": "2026-11-09",
+   "items": [
+    4,
+    3,
+    2,
+    4,
+    4
+   ]
+  },
+  {
+   "taken_on": "2026-11-23",
+   "items": [
+    4,
+    3,
+    2,
+    3,
+    3
+   ]
+  }
+ ]
+}
