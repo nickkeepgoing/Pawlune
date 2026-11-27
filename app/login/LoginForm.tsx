@@ -1,72 +1,91 @@
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+'use client';
+import { useActionState, useState } from 'react';
+import { forgotPassword, googleAuth, register, signIn, type AuthState } from './actions';
+import { SubmitButton } from '@/components/SubmitButton';
+import { PasswordInput } from '@/components/PasswordInput';
+import { USERNAME_HINT } from '@/lib/username';
 
-const TH_ERRORS: Record<string, string> = {
-  invalid_credentials: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
-  email_not_confirmed: "ยังไม่ได้ยืนยันอีเมล กรุณาเปิดลิงก์ในอีเมลก่อน",
-  user_already_exists: "อีเมลนี้มีบัญชีอยู่แล้ว ลองเข้าสู่ระบบแทน",
-  weak_password: "รหัสผ่านสั้นเกินไป ใช้อย่างน้อย 8 ตัวอักษร",
-  over_email_send_rate_limit: "ส่งอีเมลบ่อยเกินไป รอสักครู่แล้วลองใหม่",
-  validation_failed: "กรอกอีเมลให้ถูกรูปแบบ",
-};
-const thai = (e: { code?: string } | null) => (e ? TH_ERRORS[e.code ?? ""] ?? "เกิดข้อผิดพลาด ลองอีกครั้งได้เลย" : null);
+type Mode = 'login' | 'register' | 'forgot';
 
-export default function LoginForm({ initialError }: { initialError: string | null }) {
-  const router = useRouter();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [msg, setMsg] = useState<string | null>(null);
-  const [err, setErr] = useState<string | null>(initialError);
-  const [busy, setBusy] = useState(false);
-  const callback = () => `${window.location.origin}/auth/callback`;
+function Msg({ s }: { s: AuthState }) {
+  if (s.error) return <p className="text-sm font-semibold text-cocoa" role="alert">{s.error}</p>;
+  if (s.info) return <p className="rounded-lg bg-sage/40 px-3 py-2 text-sm" role="status">{s.info}</p>;
+  return null;
+}
 
-  async function google() {
-    setBusy(true);
-    const { error } = await createClient().auth.signInWithOAuth({ provider: "google", options: { redirectTo: callback() } });
-    if (error) { setErr(thai(error)); setBusy(false); }
-  }
+function Field(p: { label: string; name: string; type?: string; auto?: string; hint?: string; min?: number }) {
+  return (
+    <label className="block">
+      <span className="text-sm">{p.label}</span>
+      {p.type === 'password'
+        ? <PasswordInput name={p.name} autoComplete={p.auto} minLength={p.min} />
+        : <input name={p.name} type={p.type ?? 'text'} autoComplete={p.auto} required minLength={p.min} className="field mt-1" autoCapitalize="none" spellCheck={false} />}
+      {p.hint && <span className="mt-1 block text-xs text-bark">{p.hint}</span>}
+    </label>
+  );
+}
 
-  async function submit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const f = new FormData(e.currentTarget);
-    const email = String(f.get("email")), password = String(f.get("password"));
-    setBusy(true); setErr(null); setMsg(null);
-    const sb = createClient();
-    if (mode === "signin") {
-      const { error } = await sb.auth.signInWithPassword({ email, password });
-      if (error) { setErr(thai(error)); setBusy(false); return; }
-      router.replace("/home"); router.refresh();
-    } else {
-      if (password.length < 8) { setErr(TH_ERRORS.weak_password); setBusy(false); return; }
-      const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: callback() } });
-      if (error) { setErr(thai(error)); setBusy(false); return; }
-      if (data.session) { router.replace("/home"); router.refresh(); return; }
-      setMsg("ส่งลิงก์ยืนยันไปที่อีเมลแล้ว เปิดลิงก์เพื่อเริ่มใช้งาน"); setBusy(false);
-    }
-  }
+export function LoginForm({ googleError }: { googleError: boolean }) {
+  const [mode, setMode] = useState<Mode>('login');
+  const [ls, loginAction] = useActionState<AuthState, FormData>(signIn, {});
+  const [rs, registerAction] = useActionState<AuthState, FormData>(register, {});
+  const [fs, forgotAction] = useActionState<AuthState, FormData>(forgotPassword, {});
 
   return (
-    <div className="paper mt-6 p-6">
-      <button type="button" onClick={google} disabled={busy} className="btn btn-ghost w-full bg-paper">
-        <svg aria-hidden width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
-        เข้าสู่ระบบด้วย Google
-      </button>
-      <div className="my-5 flex items-center gap-3 text-sm text-bark"><span className="h-px flex-1 bg-line" />หรือใช้อีเมล<span className="h-px flex-1 bg-line" /></div>
-      <form onSubmit={submit} className="space-y-4">
-        <label className="block"><span className="mb-1 block text-sm font-medium">อีเมล</span>
-          <input name="email" type="email" required autoComplete="email" className="field" /></label>
-        <label className="block"><span className="mb-1 block text-sm font-medium">รหัสผ่าน</span>
-          <input name="password" type="password" required minLength={mode === "signup" ? 8 : undefined}
-            autoComplete={mode === "signup" ? "new-password" : "current-password"} className="field" /></label>
-        {err && <p role="alert" className="rounded-lg bg-cream px-3 py-2 text-sm">{err}</p>}
-        {msg && <p role="status" className="rounded-lg bg-sage-soft px-3 py-2 text-sm">{msg}</p>}
-        <button disabled={busy} className="btn btn-primary w-full">{busy ? "กำลังดำเนินการ…" : mode === "signin" ? "เข้าสู่ระบบ" : "สมัครใช้งาน"}</button>
-      </form>
-      <button type="button" onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setErr(null); setMsg(null); }}
-        className="mt-4 min-h-11 w-full text-sm text-jade-deep underline underline-offset-4">
-        {mode === "signin" ? "ยังไม่มีบัญชี? สมัครด้วยอีเมล" : "มีบัญชีแล้ว? เข้าสู่ระบบ"}
-      </button>
+    <div className="mt-6 space-y-6">
+      {mode !== 'forgot' && (
+        <div className="grid grid-cols-2 rounded-full bg-paper p-1" role="tablist" aria-label="เข้าสู่ระบบหรือสมัคร">
+          {(['login', 'register'] as const).map((m) => (
+            <button key={m} role="tab" aria-selected={mode === m} onClick={() => setMode(m)}
+              className={`min-h-11 rounded-full font-semibold ${mode === m ? 'bg-jade text-cream' : 'text-bark'}`}>{m === 'login' ? 'เข้าสู่ระบบ' : 'สมัครสมาชิก'}</button>
+          ))}
+        </div>
+      )}
+
+      {mode === 'login' && (
+        <form action={loginAction} className="space-y-3">
+          <Field label="ชื่อผู้ใช้ (หรืออีเมล)" name="identifier" auto="username" />
+          <Field label="รหัสผ่าน" name="password" type="password" auto="current-password" />
+          <Msg s={ls} />
+          <SubmitButton pendingText="กำลังเข้าสู่ระบบ…">เข้าสู่ระบบ</SubmitButton>
+          <button type="button" onClick={() => setMode('forgot')} className="btn w-full text-jade">ลืมรหัสผ่าน</button>
+        </form>
+      )}
+
+      {mode === 'register' && (
+        <form action={registerAction} className="space-y-3">
+          <Field label="อีเมล" name="email" type="email" auto="email" hint="ใช้สำหรับยืนยันบัญชีและกรณีลืมรหัสผ่าน ไม่แสดงให้ใครเห็น" />
+          <Field label="ชื่อผู้ใช้" name="username" auto="username" hint={USERNAME_HINT} />
+          <Field label="รหัสผ่าน" name="password" type="password" auto="new-password" min={8} hint="อย่างน้อย 8 ตัวอักษร" />
+          <Field label="ยืนยันรหัสผ่าน" name="confirm" type="password" auto="new-password" min={8} />
+          <Msg s={rs} />
+          <SubmitButton pendingText="กำลังสมัคร…">สมัครสมาชิก</SubmitButton>
+        </form>
+      )}
+
+      {mode === 'forgot' && (
+        <form action={forgotAction} className="space-y-3">
+          <h2 className="text-lg font-bold">ลืมรหัสผ่าน</h2>
+          <p className="text-sm text-bark">กรอกอีเมลหรือชื่อผู้ใช้ เราจะส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่อีเมลที่ใช้สมัคร</p>
+          <Field label="อีเมลหรือชื่อผู้ใช้" name="identifier" auto="username" />
+          <Msg s={fs} />
+          <SubmitButton pendingText="กำลังส่ง…">ส่งลิงก์ตั้งรหัสผ่านใหม่</SubmitButton>
+          <button type="button" onClick={() => setMode('login')} className="btn w-full text-jade">กลับไปเข้าสู่ระบบ</button>
+        </form>
+      )}
+
+      {mode !== 'forgot' && (
+        <>
+          <div className="flex items-center gap-3 text-sm text-bark"><span className="h-px flex-1 bg-bark/25" />หรือ<span className="h-px flex-1 bg-bark/25" /></div>
+          <form action={googleAuth}>
+            <SubmitButton className="btn btn-ghost w-full bg-paper" pendingText="กำลังไปที่ Google…">
+              <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden><path fill="#4285F4" d="M23 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.2a5.3 5.3 0 0 1-2.3 3.5v2.9h3.7c2.2-2 3.4-5 3.4-8.5Z"/><path fill="#34A853" d="M12 23.5c3.1 0 5.7-1 7.6-2.8l-3.7-2.9c-1 .7-2.3 1.1-3.9 1.1-3 0-5.5-2-6.4-4.7H1.8v3A11.5 11.5 0 0 0 12 23.5Z"/><path fill="#FBBC05" d="M5.6 14.2a6.9 6.9 0 0 1 0-4.4v-3H1.8a11.5 11.5 0 0 0 0 10.4l3.8-3Z"/><path fill="#EA4335" d="M12 5c1.7 0 3.2.6 4.4 1.7l3.3-3.3A11.5 11.5 0 0 0 1.8 6.8l3.8 3C6.5 7 9 5 12 5Z"/></svg>
+              เข้าสู่ระบบด้วย Google
+            </SubmitButton>
+            {googleError && <p className="mt-2 text-sm text-cocoa" role="alert">เข้าสู่ระบบด้วย Google ไม่สำเร็จ ลองใช้ชื่อผู้ใช้แทน</p>}
+          </form>
+        </>
+      )}
     </div>
   );
 }

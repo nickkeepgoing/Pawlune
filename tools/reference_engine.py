@@ -1,5 +1,5 @@
 """
-Reference engine for Paw Diary.
+Reference engine for Pawlune.
 This is the SOURCE OF TRUTH for every number the app shows.
 The TypeScript engine in lib/engine must produce identical results on fixtures/.
 

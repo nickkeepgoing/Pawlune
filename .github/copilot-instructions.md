@@ -1,40 +1,36 @@
-# Paw Diary — Copilot instructions
+# Pawlune — Copilot instructions
 
 ## Project shape
 
-Paw Diary is a Thai-first Next.js App Router app for daily pet-related mood check-ins, WHO-5 well-being entries, and personal activity patterns. The UI lives in `app/` and shared UI in `components/`. Signed-in screens are grouped under `app/(app)/`; their layout uses `lib/guard.ts` to require a completed onboarding state and provides the shared header and navigation.
+Pawlune is a Thai-first Next.js App Router app for pet well-being and a 14-day foster-to-adopt trial with shelters. Cats are the MVP focus; dogs remain supported. The main journey is preference entry and rule-based matching (`/adopt`), a trial request with explicit data-sharing consent, shelter approval, day-one WHO-5/ST-5, daily check-ins, a day-14 decision, and monthly feedback after adoption. `handoff/08_CODE_STATUS.md` describes the implemented trial flow; use `docs/PRD.md` and `docs/USER_FLOW.md` for product constraints and the existing check-in/well-being flows.
 
-Server actions in `app/actions.ts` handle writes and re-check the user's session and onboarding stage. `lib/data.ts` contains server-only database loaders; `lib/supabase/` separates server, browser, and admin clients. Supabase is the persistence layer, with the schema and row-level security policies in `supabase/migrations/`. Private pages must remain request-specific; `lib/guard.ts` uses `connection()` to prevent private data from being prerendered or cached.
+Signed-in routes are grouped in `app/(app)/`. `lib/guard.ts` and `lib/data.ts` resolve the user and onboarding state; the shared layout supplies navigation, the always-visible help button, and the demo badge. Mutations live in route-specific `actions.ts` files. `lib/trialData.ts` loads trial, shelter, and feedback data. `lib/trialAdmin.ts` performs privileged trial state changes on the server after checking the relevant user or shelter authorization. Supabase schema and RLS are in `supabase/migrations/`; apply migrations in the sequence documented by `handoff/08_CODE_STATUS.md`.
 
-All product metrics belong to the pure TypeScript functions in `lib/engine/`. The app loads data through `lib/data.ts`, passes it to the engine, and renders its results. The engine is checked against `fixtures/expected.json`; `tools/reference_engine.py` is the calculation source of truth. `lib/time.ts` is the server-side source of the Asia/Bangkok calendar date. Optional weekly AI summaries may receive aggregated engine output only; the AI must never calculate, alter, or invent metrics.
+Pure calculations live in `lib/engine/`. `match.ts` performs transparent, rule-based matching and returns fit reasons and cautions; allergy and safety constraints can exclude a match. The TS engine is checked against fixtures, with `tools/reference_engine.py` as the calculation reference. Keep Bangkok dates in the server-side date helpers and pass dates into pure engine functions.
 
 ## Commands
 
-- `npm run dev` — start the local Next.js development server.
-- `npm run build` — production build; `npm run start` serves that build.
-- `npm run lint` — run ESLint.
-- `npm run test` — run the Vitest suite.
-- `npx vitest run lib/engine/__tests__/engine.test.ts` — run the engine test file.
-- `npx vitest run lib/engine/__tests__/engine.test.ts -t "test name"` — run a matching test by name.
-- `npm run test:ref` — check the Python reference engine against the expected fixtures.
-- `npm run seed:demo` — seed demo data; requires the local environment configured for the demo account.
+- `npm run dev` — start Next.js locally.
+- `npm run build` — production build; `npm run start` serves it.
+- `npm test` — run the Vitest suite.
+- `npx vitest run lib/engine/__tests__/trial.test.ts` — run the trial/matching/ST-5 test file.
+- `npx vitest run lib/engine/__tests__/engine.test.ts -t "test name"` — run one matching engine test.
+- `npm run test:engine` — run the fixture-based engine checker.
+- `npm run typecheck` — run TypeScript without emitting files.
+- `npm run test:ref` — check the Python reference engine; requires Python 3.
+- `npm run seed:demo` — seed demo and shelter accounts; requires the local environment variables.
 
-## Product and data invariants
+## Product and data constraints
 
-- Follow `docs/PRD.md` and `docs/USER_FLOW.md`; keep screens and behaviors within their documented scope. For ambiguous decisions, choose the safer option and record it in `NOTES.md`.
-- Read `docs/ENGINE.md` before changing metric calculations or Pattern copy. Preserve the reference fixtures exactly; pass dates into pure engine functions rather than reading the current time inside them.
-- Describe patterns as associations, never causes. Use wording such as “ไปด้วยกันกับ” and “ในวันที่…คะแนนเฉลี่ยสูงกว่า”; never imply that an activity treats, fixes, or causes a mood change. Every Pattern card must show both `n_with` and `n_without`, its status, and the limitation line: `เป็นความสัมพันธ์ในข้อมูลของคุณ ยังบอกไม่ได้ว่าอะไรเป็นสาเหตุ`.
-- Do not diagnose or clinically interpret results. Use “อารมณ์วันนี้” for daily mood and “คะแนนสุขภาวะทางใจ” for WHO-5; avoid diagnostic or risk labels.
-- Keep “ต้องการคนรับฟัง” reachable on every signed-in screen. Follow `docs/SAFETY_PRIVACY.md`; gentle cards do not gate help, and the help flow must not use AI.
-- Use the validated Thai WHO-5 items in `content/who5-th.json` verbatim. If that file is absent, use the official English items and show a visible TODO; do not generate or translate the questionnaire.
-- Mood and well-being data are sensitive. Require explicit consent before storing data and separate consent for each PDF export. Keep RLS on every table, pet photos in the private `pet-photos` bucket, and service-role/AI credentials server-only. Never send notes or raw check-ins to AI, and do not add analytics or tracking.
-- Do not store a birthdate; onboarding only confirms the user is 20 or older. Accounts seeded from `fixtures/demo-seed.json` must retain the visible “ข้อมูลจำลอง” badge.
-- Keep user-facing copy in Thai and code, comments, and commits in English.
+- Keep matching rule-based, explainable, and non-guaranteeing. Never describe it as AI or claim it guarantees compatibility or reduces returns. Preserve allergy/safety exclusions and show fit reasons and cautions.
+- The trial applicant explicitly consents before sharing readiness and feedback with the shelter. Shelter staff must only see data authorized for their shelter; do not expose the user's well-being scores or private check-ins to shelters. Keep trial state changes behind `lib/trialAdmin.ts` and its authorization checks.
+- Well-being scores are self-reported, non-clinical information. Do not diagnose, use risk labels, or claim cause or treatment. Keep the help button reachable throughout signed-in screens; follow `docs/SAFETY_PRIVACY.md`.
+- Use the team-approved questionnaire text from `content/` verbatim. Never generate or translate WHO-5 or ST-5 wording with AI. Preserve the English fallback and visible TODO when validated Thai WHO-5 text is unavailable.
+- Require consent before storing sensitive well-being data; retain RLS on every table and keep service-role credentials server-only. Never add analytics/tracking or send private notes/raw check-ins to AI.
+- Keep onboarding at 20+ without collecting birthdates. Demo data must remain clearly marked with the persistent “ข้อมูลจำลอง” badge.
+- Follow `CLAUDE.md`, `docs/PRD.md`, `docs/SAFETY_PRIVACY.md`, and the feature-specific handoff/docs. If route docs conflict with the implemented trial flow, check `handoff/08_CODE_STATUS.md` and the relevant route/action and migration before changing behavior.
+- User-facing copy is Thai; code, comments, and commits are English.
 
 ## UI conventions
 
-Follow `docs/DESIGN_BRIEF.md` and use the `frontend-design` skill when available. Keep the interface calm, warm, mobile-first (375 px), and accessible: AA contrast, visible focus, and 44 px tap targets. Preserve the custom keyboard-accessible mood faces, neutral burden-activity styling, honest Pattern cards, and persistent demo badge. Respect reduced-motion preferences for animations.
-
-## Phase workflow
-
-Work on one phase at a time and use that phase's documented “Done when” checklist. Before calling a phase complete, run `npm run test` and `npm run build`.
+Follow `docs/DESIGN_BRIEF.md`: calm, warm, and private, with the established cream/sage/jade/bark palette and no neon or gradient text. The signed-in shell is narrow by default; add `wide` to a page root for full-width grid layouts. Keep controls keyboard-accessible, maintain visible focus and AA contrast, and respect reduced-motion preferences.

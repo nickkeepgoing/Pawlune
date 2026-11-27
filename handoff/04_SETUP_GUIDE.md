@@ -60,7 +60,7 @@ AI_MODEL=           (ไม่บังคับ)
    - **anon / public** (หรือ **publishable**) key → ใส่ `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - **service_role** (หรือ **secret**) key → กด Reveal → ใส่ `SUPABASE_SERVICE_ROLE_KEY`
      ⚠️ ตัวนี้เข้าถึงข้อมูลทุกคนได้ ห้ามใส่ในโค้ดฝั่งเบราว์เซอร์ ห้ามส่งให้ใคร
-4. สร้างตาราง: เมนูซ้าย **SQL Editor** → **New query** → เปิดไฟล์ `supabase/migrations/0001_init.sql` ก๊อปทั้งหมดมาวาง → **Run**
+4. สร้างตาราง: เมนูซ้าย **SQL Editor** → **New query** → รันไฟล์ใน `supabase/migrations/` ตามลำดับเลข ตั้งแต่ `0001_init.sql` ถึง `0006_grants.sql`
    ต้องขึ้น Success → ไปดูที่ **Table Editor** ต้องเห็น `profiles, pets, checkins, who5_entries`
    และที่ **Storage** ต้องเห็น bucket `pet-photos` (Private)
 5. ตั้งค่าล็อกอินอีเมล: **Authentication** → **Sign In / Providers** → Email เปิดอยู่แล้ว
@@ -72,7 +72,7 @@ AI_MODEL=           (ไม่บังคับ)
 ## 5. Google Login (~20 นาที) — ข้ามได้ถ้าเวลาไม่พอ (ใช้อีเมลอย่างเดียว)
 1. https://console.cloud.google.com → ล็อกอิน Google → ด้านบนกดเลือกโปรเจกต์ → **New Project** → ชื่อ `paw-diary` → Create → เลือกโปรเจกต์นี้
 2. ไปที่ **APIs & Services** → **OAuth consent screen** (บางทีชื่อ **Google Auth Platform**) → **Get started**
-   - App name: `Paw Diary` · User support email: อีเมลเรา
+   - App name: `Pawlune` · User support email: อีเมลเรา
    - Audience: **External** · Contact email: อีเมลเรา → ยอมรับเงื่อนไข → Create
 3. **Audience** (หรือหัวข้อ Test users) → เพิ่มอีเมลของทุกคนที่จะลองล็อกอิน (ระหว่างแอปอยู่โหมดทดสอบ มีแค่คนในรายชื่อที่ล็อกอินได้)
    ก่อนเดโมจริงให้กด **Publish app** หรือใส่อีเมลกรรมการ/บัญชีเดโมไว้ล่วงหน้า

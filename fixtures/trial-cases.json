@@ -1,0 +1,21 @@
+{
+  "_note": "Hand-computed expectations for ST-5, matching and trial helpers (TS-only; not part of reference_engine.py).",
+  "st5": [
+    { "items": [0, 0, 1, 1, 2], "raw": 4, "level": "เครียดน้อย", "gentle_card": false },
+    { "items": [1, 1, 1, 1, 1], "raw": 5, "level": "เครียดปานกลาง", "gentle_card": false },
+    { "items": [2, 2, 2, 1, 1], "raw": 8, "level": "เครียดมาก", "gentle_card": true },
+    { "items": [3, 3, 3, 3, 3], "raw": 15, "level": "เครียดมากที่สุด", "gentle_card": true },
+    { "items": [4, 0, 0, 0, 0], "error": true },
+    { "items": [1, 1, 1, 1], "error": true }
+  ],
+  "trial_day": [
+    { "start": "2026-11-15", "today": "2026-11-15", "day": 1, "decision_open": false },
+    { "start": "2026-11-15", "today": "2026-11-28", "day": 14, "decision_open": true },
+    { "start": "2026-11-15", "today": "2026-11-27", "day": 13, "decision_open": false }
+  ],
+  "before_after": {
+    "start": "2026-11-15",
+    "rows": [{ "taken_on": "2026-10-20" }, { "taken_on": "2026-11-09" }, { "taken_on": "2026-11-20" }, { "taken_on": "2026-11-28" }],
+    "before": "2026-11-09", "after": "2026-11-28"
+  }
+}

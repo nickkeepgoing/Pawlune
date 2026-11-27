@@ -1,20 +1,23 @@
-import type { Metadata, Viewport } from "next";
-import { Anuphan, Fraunces } from "next/font/google";
-import "./globals.css";
+import type { Metadata, Viewport } from 'next';
+import { Anuphan, Bricolage_Grotesque } from 'next/font/google';
+import './globals.css';
 
-const anuphan = Anuphan({ subsets: ["thai", "latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-anuphan" });
-const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces" });
+const anuphan = Anuphan({ subsets: ['thai', 'latin'], weight: ['400', '500', '600', '700'], variable: '--font-anuphan', display: 'swap' });
+const bricolage = Bricolage_Grotesque({ subsets: ['latin'], variable: '--font-bricolage', display: 'swap' });
 
 export const metadata: Metadata = {
-  title: "Paw Diary — บันทึกใจกับน้อง",
-  description: "บันทึกอารมณ์ประจำวันกับสัตว์เลี้ยง แล้วสังเกตรูปแบบของคุณเอง",
+  title: 'Pawlune — More Than Adoption. A Better Bond.',
+  description: 'บันทึกวันละ 10 วินาที แล้วดูว่าเวลาแบบไหนกับน้อง ไปด้วยกันกับวันดีของคุณ',
+  manifest: '/manifest.webmanifest',
+  icons: { icon: '/icon.svg' },
 };
-export const viewport: Viewport = { themeColor: "#F2EADB" };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export const viewport: Viewport = { themeColor: '#4E6E58', width: 'device-width', initialScale: 1 };
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="th" className={`${anuphan.variable} ${fraunces.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="th" className={`${anuphan.variable} ${bricolage.variable}`}>
+      <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );
 }

@@ -1,4 +1,4 @@
-# PRD — Paw Diary (MVP)
+# PRD — Pawlune (MVP)
 
 ## Problem
 Many people believe pets make them feel better, but research results are mixed: a review of 54 studies classed
@@ -33,6 +33,13 @@ pet-specific and honest:
 | F7 | Settings: export PDF (separate consent), delete all data, sign out | Must |
 | F8 | Past pets ("ความทรงจำ") one screen, optional | Nice |
 | F9 | AI weekly summary from engine numbers only | Nice (last) |
+| F14 | **MAIN: ทดลองรับเลี้ยง 14 วัน (foster-to-adopt)** — preferences + allergy-safe matching with reasons → apply (explicit share consent) → shelter approves → day 1 WHO-5 + ST-5 → daily check-in → day 14 before/after + decision (adopt / return / unsure) → monthly feedback if adopted; return → pet becomes a memory, user can match again | Must |
+| F15 | ST-5 stress test (กรมสุขภาพจิต), stored, timeline, gentle card at ≥ 8, in report image | Must |
+| F16 | /learn/care: basic care guide + sourced costs + budget calculator; real shelter contact (BKK Adopter) | Must |
+| F17 | /shelter staff page (is_shelter): approve/decline, see shared readiness + feedback only, confirm return | Must |
+| F11 | Learn page "สัตว์บำบัดคืออะไร" (/learn/therapy): definitions, 3 types, who it serves, what research says, cautions, interactive pets | Nice |
+| F12 | Past pets ("ความทรงจำ") included as an optional section in the user-owned PDF report (off by default) | Nice |
+| ~~F13~~ | ~~Private photo album~~ REMOVED 26 Nov | (/album): daily photos with caption, feed/grid, owner-only | Nice |
 | F10 | Learn page: pets & mind — what research says (mixed), pet ownership ≠ animal-assisted therapy | Nice |
 
 ## Out of scope

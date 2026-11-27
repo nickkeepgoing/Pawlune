@@ -1,22 +1,19 @@
-import { isActivityId, type ActivityId } from "./activities";
+import { isActivityId, type ActivityId } from './activities';
 
-export interface CheckinInput {
-  date: string; // YYYY-MM-DD, Asia/Bangkok
-  mood: number;
-  activities: string[];
-  created_at: string;
-  note?: string;
-}
-export interface Checkin extends CheckinInput {
+export interface Checkin {
+  date: string; // YYYY-MM-DD, Asia/Bangkok calendar date
+  mood: number; // 1..5
   activities: ActivityId[];
+  note?: string;
+  created_at: string;
 }
 
-/** One check-in per date; latest created_at wins. Throws on invalid mood/activity. */
-export function dedupeCheckins(rows: CheckinInput[]): Checkin[] {
-  const byDate = new Map<string, CheckinInput>();
+/** One check-in per date; the latest created_at wins. Validates mood and activity ids. */
+export function dedupeCheckins(rows: { date: string; mood: number; activities: string[]; created_at: string; note?: string }[]): Checkin[] {
+  const byDate = new Map<string, (typeof rows)[number]>();
   for (const r of rows) {
-    const cur = byDate.get(r.date);
-    if (!cur || r.created_at >= cur.created_at) byDate.set(r.date, r);
+    const prev = byDate.get(r.date);
+    if (!prev || r.created_at >= prev.created_at) byDate.set(r.date, r);
   }
   const out = [...byDate.values()].sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
   for (const r of out) {

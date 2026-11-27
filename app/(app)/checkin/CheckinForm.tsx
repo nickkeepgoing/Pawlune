@@ -1,89 +1,112 @@
-"use client";
-import { useState } from "react";
-import { useFormStatus } from "react-dom";
-import { saveCheckin } from "@/app/actions";
-import { ACTIVITIES, ACTIVITY_IDS } from "@/lib/engine/activities";
-import MoodFace, { MOOD_LABELS } from "@/components/MoodFace";
-import { Cat, Dog } from "@/components/PetArt";
+'use client';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { ACTIVITIES, ACTIVITY_IDS, type ActivityId } from '@/lib/engine';
+import { MOOD_LABELS } from '@/lib/format';
+import { MoodFace } from '@/components/MoodFace';
+import { IconCheck } from '@/components/Icons';
+import { CatMakham, DogTuaDaeng } from '@/components/Pets';
+import { saveCheckin } from './actions';
 
-function Save() {
-  const { pending } = useFormStatus();
-  return <button disabled={pending} className="btn btn-primary w-full text-lg">{pending ? "กำลังบันทึก…" : "บันทึก"}</button>;
-}
+const JOY = ACTIVITY_IDS.filter((a) => ACTIVITIES[a].kind === 'joy');
+const BURDEN = ACTIVITY_IDS.filter((a) => ACTIVITIES[a].kind === 'burden');
 
-const Chip = ({ id, checked, kind }: { id: string; checked: boolean; kind: "joy" | "burden" }) => (
-  <label>
-    <input type="checkbox" name="activities" value={id} defaultChecked={checked} className="peer sr-only" />
-    <span className={`inline-flex min-h-11 cursor-pointer items-center rounded-full border-[1.5px] px-4 text-sm transition peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-jade ${kind === "joy"
-      ? "border-bark/30 bg-paper peer-checked:border-jade peer-checked:bg-sage peer-checked:font-semibold"
-      : "border-dashed border-bark bg-paper peer-checked:border-solid peer-checked:bg-[#E9DFCF] peer-checked:font-semibold"}`}>
-      {ACTIVITIES[id as keyof typeof ACTIVITIES].th}
-    </span>
-  </label>
-);
+type Props = {
+  petName: string; species: 'dog' | 'cat' | 'other'; photoUrl: string | null; dateLabel: string;
+  initial: { mood: number; activities: string[]; note: string } | null; lastActivities: string[] | null;
+};
 
-export default function CheckinForm({ petName, species, photo, dateLabel, existing }: {
-  petName: string; species: string; photo: string | null; dateLabel: string;
-  existing: { mood: number; activities: string[]; note: string | null } | null;
-}) {
-  const [mood, setMood] = useState<number | null>(existing?.mood ?? null);
-  const acts = new Set(existing?.activities ?? []);
-  return (
-    <form action={saveCheckin} className="space-y-6">
-      {/* Signature element: the user's own pet is the hero */}
-      <div className="paper rise relative overflow-hidden">
-        <div className="aspect-[4/3] w-full bg-sage-soft">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          {photo ? <img src={photo} alt={`รูปของ${petName}`} className="size-full object-cover" />
-            : <div className="flex size-full items-end justify-center">{species === "cat" ? <Cat size={180} /> : <Dog size={180} />}</div>}
+export function CheckinForm({ petName, species, photoUrl, dateLabel, initial, lastActivities }: Props) {
+  const router = useRouter();
+  const [mood, setMood] = useState<number | null>(initial?.mood ?? null);
+  const [acts, setActs] = useState<Set<string>>(new Set(initial?.activities ?? []));
+  const [note, setNote] = useState(initial?.note ?? '');
+  const [showNote, setShowNote] = useState(Boolean(initial?.note));
+  const [state, setState] = useState<'idle' | 'saving' | 'done'>('idle');
+  const [error, setError] = useState<string | null>(null);
+
+  const toggle = (a: ActivityId) => setActs((s) => { const n = new Set(s); if (n.has(a)) n.delete(a); else n.add(a); return n; });
+
+  async function save() {
+    if (!mood) { setError('เลือกอารมณ์วันนี้ก่อน'); return; }
+    setState('saving'); setError(null);
+    const res = await saveCheckin({ mood, activities: [...acts], note });
+    if (res.error) { setState('idle'); setError(res.error); return; }
+    setState('done');
+    setTimeout(() => { router.push('/home'); router.refresh(); }, 1400);
+  }
+
+  if (state === 'done') {
+    return (
+      <section className="flex flex-col items-center py-12 text-center" role="status">
+        <div className="relative">
+          {species === 'cat' ? <CatMakham className="h-36 w-36" /> : <DogTuaDaeng className="h-36 w-36" />}
+          <svg viewBox="0 0 24 24" className="absolute left-1/2 top-0 h-7 w-7 -translate-x-1/2 text-honey" style={{ animation: 'floatUp 1.2s ease-out forwards' }} aria-hidden fill="currentColor"><path d="M12 21s-7.5-4.6-9.5-9.2C1 8.4 3.2 5 6.6 5c2 0 3.5 1.1 5.4 3 1.9-1.9 3.4-3 5.4-3 3.4 0 5.6 3.4 4.1 6.8C19.5 16.4 12 21 12 21Z" /></svg>
         </div>
-        <div className="flex items-baseline justify-between px-5 py-3">
-          <p className="text-lg font-semibold">{petName}</p>
+        <p className="mt-4 text-xl font-bold">บันทึกแล้ว ขอบคุณที่ดูแลใจตัวเองวันนี้</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className="space-y-6 pb-4">
+      {/* Signature element: the user's own pet photo is the hero of the check-in card */}
+      <div className="page flex items-center gap-4 rounded-[var(--radius-sheet)] border border-bark/20 p-4">
+        {photoUrl
+          // eslint-disable-next-line @next/next/no-img-element
+          ? <img src={photoUrl} alt={`รูป${petName}`} className="h-24 w-24 shrink-0 rounded-[var(--radius-card)] object-cover" />
+          : <div className="grid h-24 w-24 shrink-0 place-items-center rounded-[var(--radius-card)] bg-cream">{species === 'cat' ? <CatMakham className="h-20 w-20" still /> : <DogTuaDaeng className="h-20 w-20" still />}</div>}
+        <div>
           <p className="text-sm text-bark">{dateLabel}</p>
+          <h1 className="text-xl font-bold">วันนี้กับ{petName} เป็นยังไงบ้าง</h1>
+          {initial && <p className="mt-1 text-sm text-bark">บันทึกวันนี้แล้ว แก้ไขได้</p>}
         </div>
       </div>
 
-      <fieldset className="rise rise-2">
-        <legend className="mb-3 text-lg font-semibold">อารมณ์วันนี้</legend>
-        <div className="grid grid-cols-5 gap-1">
+      <fieldset>
+        <legend className="font-semibold">อารมณ์วันนี้</legend>
+        <div className="mt-2 grid grid-cols-5 gap-1" role="radiogroup" aria-label="อารมณ์วันนี้">
           {[1, 2, 3, 4, 5].map((m) => (
-            <label key={m} className="flex flex-col items-center">
-              <input type="radio" name="mood" value={m} required checked={mood === m} onChange={() => setMood(m)} className="peer sr-only" />
-              <span className={`flex w-full cursor-pointer flex-col items-center gap-1 rounded-2xl py-2 transition peer-focus-visible:outline-3 peer-focus-visible:outline-jade ${mood === m ? "bg-paper shadow-[var(--shadow-paper)] -translate-y-1" : "opacity-80 hover:opacity-100"}`}>
-                <MoodFace mood={m} size={mood === m ? 50 : 44} />
-                <span className={`text-xs ${mood === m ? "font-semibold" : "text-bark"}`}>{MOOD_LABELS[m - 1]}</span>
-              </span>
-            </label>
+            <button key={m} type="button" role="radio" aria-checked={mood === m} onClick={() => setMood(m)}
+              className={`flex min-h-20 flex-col items-center justify-center gap-1 rounded-[var(--radius-card)] border-2 text-xs ${mood === m ? 'border-jade bg-sage text-cocoa' : 'border-transparent text-bark'}`}>
+              <MoodFace mood={m} className="h-10 w-10" />{MOOD_LABELS[m - 1]}
+            </button>
           ))}
         </div>
       </fieldset>
 
-      <fieldset className="rise rise-3">
-        <legend className="mb-2 font-semibold">วันนี้กับน้อง</legend>
-        <div className="flex flex-wrap gap-2">
-          {ACTIVITY_IDS.filter((a) => ACTIVITIES[a].kind === "joy").map((a) => <Chip key={a} id={a} kind="joy" checked={acts.has(a)} />)}
+      <fieldset>
+        <div className="flex items-end justify-between gap-2">
+          <legend className="font-semibold">วันนี้กับน้อง <span className="text-sm font-normal text-bark">เลือกได้หลายข้อ</span></legend>
+          {lastActivities && lastActivities.length > 0 && (
+            <button type="button" className="text-sm font-semibold text-jade underline underline-offset-4" onClick={() => setActs(new Set(lastActivities))}>เหมือนครั้งก่อน</button>
+          )}
+        </div>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {JOY.map((a) => (<button key={a} type="button" className="chip" aria-pressed={acts.has(a)} onClick={() => toggle(a)}>{acts.has(a) && <IconCheck />}{ACTIVITIES[a].th}</button>))}
         </div>
       </fieldset>
 
-      <fieldset className="rise rise-3">
-        <legend className="mb-2 font-semibold">ภาระวันนี้</legend>
-        <div className="flex flex-wrap gap-2">
-          {ACTIVITY_IDS.filter((a) => ACTIVITIES[a].kind === "burden").map((a) => <Chip key={a} id={a} kind="burden" checked={acts.has(a)} />)}
+      <fieldset>
+        <legend className="font-semibold">ภาระวันนี้ <span className="text-sm font-normal text-bark">เลือกได้หลายข้อ</span></legend>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {BURDEN.map((a) => (<button key={a} type="button" className="chip chip-burden" aria-pressed={acts.has(a)} onClick={() => toggle(a)}>{acts.has(a) && <IconCheck />}{ACTIVITIES[a].th}</button>))}
         </div>
       </fieldset>
 
-      <details className="paper rise rise-4 group" open={!!existing?.note}>
-        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-5 font-medium">
-          เขียนบันทึกสั้นๆ (ไม่บังคับ)<span aria-hidden className="transition group-open:rotate-45">＋</span>
-        </summary>
-        <label className="block px-5 pb-5">
-          <span className="sr-only">บันทึก</span>
-          <textarea name="note" maxLength={500} rows={4} defaultValue={existing?.note ?? ""} className="field ruled leading-[1.9rem]" placeholder="วันนี้เป็นยังไงบ้าง" />
-          <span className="mt-1 block text-xs text-bark">ไม่เกิน 500 ตัวอักษร · เห็นได้เฉพาะคุณ</span>
-        </label>
-      </details>
+      <div>
+        {showNote ? (
+          <label className="block"><span className="font-semibold">โน้ต</span> <span className="text-sm text-bark">(เห็นได้คนเดียว ไม่ถูกส่งให้ AI)</span>
+            <textarea value={note} onChange={(e) => setNote(e.target.value)} maxLength={500} rows={3} className="field mt-1" />
+            <span className="text-xs text-bark"><span className="num">{note.length}</span>/500</span>
+          </label>
+        ) : (
+          <button type="button" className="text-sm font-semibold text-jade underline underline-offset-4" onClick={() => setShowNote(true)}>เพิ่มโน้ต</button>
+        )}
+      </div>
 
-      <Save />
-    </form>
+      {error && <p className="font-semibold" role="alert">{error}</p>}
+      <button type="button" onClick={save} disabled={state === 'saving'} className="btn btn-primary w-full text-lg">{state === 'saving' ? 'กำลังบันทึก…' : 'บันทึก'}</button>
+    </section>
   );
 }

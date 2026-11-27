@@ -1,13 +1,17 @@
-# Paw Diary — Claude Code kit (ToBeIT'70, Healthy Living)
+# Pawlune — Claude Code kit (ToBeIT'70, Healthy Living)
 
 ## Before anything: 5 team TODOs (do these first, they decide whether we can win)
 1. **Check the hackathon rules**: is code written before 28 Nov allowed? If not, use this kit only as a plan and
    build everything onsite (the docs/prompts are still valid).
 2. **WHO-5 Thai text** → `content/who5-th.json` (see content/who5-th.TODO.md). Never AI-translated.
-3. **Confirm hotlines** 1323 and 1669 on official sites (docs/EVIDENCE.md #6).
+3. ~~**Confirm hotlines**~~ DONE 2026-11-26 — 1323 and 1669 both still in service (docs/EVIDENCE.md #6).
 4. **5 real pet owners** try the check-in (paper or prototype). Record: seconds taken, would they check in daily,
    do they want to see Patterns. Only real numbers go into the pitch.
 5. **Supabase project + Google OAuth** ready; copy `.env.example` → `.env.local`.
+
+## Code status
+All phases (0–6) are implemented. Engine verified against fixtures. Not yet built with real packages — see `handoff/08_CODE_STATUS.md`.
+Run: `npm install` → `cp .env.example .env.local` → `npm run test:engine && npm run build` → `npm run dev`.
 
 ## How to use with Claude Code
 1. Unzip into an empty folder, `git init`, open Claude Code there.

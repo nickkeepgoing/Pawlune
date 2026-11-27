@@ -1,29 +1,33 @@
-# NOTES.md — decisions and open items
+# NOTES.md — decisions where the docs were ambiguous (chose the safer option)
 
-## Built (all phases 0–6 in one session, at the user's request)
-Engine (`lib/engine`, 9 tests vs `fixtures/expected.json`), auth, onboarding, check-in, home, patterns (+info),
-WHO-5 (+timeline), help sheet, gentle cards, report, settings/delete-all, pets & memories, learn page, demo seed script.
+- Status chip `more_data` reads "แนวโน้มจากข้อมูล 14 วันขึ้นไป" (the threshold), not the actual group size, so it never looks like a bigger claim.
+- PDF export uses the browser's print-to-PDF (LOW_QUOTA_PLAN cut #2): Thai renders with the page font, no PDF library needed.
+- Under-20 answer deletes the just-created account (consent included) and signs out → "nothing stored". Needs the service-role key on the server.
+- Pattern copy for `insufficient` with only one side missing: "ต้องมีวันที่ไม่ได้ทำอีก N วัน".
+- Landing hero card is computed by the engine from fixtures/demo-seed.json and labelled "ตัวอย่างจากข้อมูลจำลอง".
+- Copy contains "รักษา" once (landing: "เราไม่บอกว่าสัตว์รักษาใจ") and "บำบัด" once (/learn: "เลี้ยงสัตว์ ไม่เท่ากับ สัตว์บำบัด"), both verbatim from DESIGN_BRIEF and both negations. Pattern/AI/PDF text is checked against the banned list.
+- Added from 06_REVIEW: "เหมือนครั้งก่อน" shortcut on check-in, "สัปดาห์นี้กับน้อง" counts on home while patterns need 7 days, selected chips show a jade border + check icon (sage fill alone is 1.6:1).
+- AI weekly summary (optional): only engine numbers are sent; output is dropped if it contains a banned word or any number not present in the input.
+- Demo seed shifts all dates so the last seeded day is yesterday; pattern numbers are unchanged by a uniform shift (script verifies against expected.json).
+- Pinned Next.js 15 (middleware.ts). If create-next-app gives you Next 16, keep package.json as is.
+- Added F11–F13 (team request 26 Nov): /learn/therapy, memories section in report (off by default), private photo album. Needs migration `0002_photos.sql`.
+- Album photos are stored flat as `{uid}/p-<uuid>.jpg` so delete-all (lists `{uid}/`) removes them too.
+- Consent text now mentions album photos and memories; consent_version bumped to 'v2' for new users.
+- /learn/therapy avoids the word "ซึมเศร้า" (rule 3) and says "ผู้ป่วยจิตเวช" instead.
+- Login by username: the server looks up the email with the service role, then signs in by email. Wrong username and wrong password give the same message. Forgot-password always answers the same.
+- Passwords: minimum 8 characters (set the same in Supabase → Authentication → Policies if you want it enforced there too).
+- Default avatar = one of 6 original animal faces chosen from the user id (stable). Picking an animal removes the uploaded photo.
+- Bottom nav: หน้าแรก · บันทึก · อัลบั้ม · รูปแบบ · สุขภาวะ. Settings moved to the gear icon in the header.
 
-## Decisions (safer option chosen where docs were ambiguous)
-- **Next.js 16**: `middleware.ts` is now `proxy.ts`. `cacheComponents` is OFF — every signed-in page reads private
-  per-user data, so nothing is cached or prerendered (`connection()` in `lib/guard.ts`).
-- **PDF**: browser print (`window.print()` + print CSS) instead of @react-pdf — LOW_QUOTA_PLAN cut #2. Thai renders with
-  the page's Anuphan font; the user picks "Save as PDF". Export consent dialog shows every time.
-- **Insufficient-card "อีก N วัน"** = the larger of need_more_with / need_more_without.
-- **"same" direction copy**: `…คะแนนอารมณ์เฉลี่ย X เท่ากันกับ N วันที่ไม่มี (Y)`.
-- **Gentle card on /wellbeing** shows only on the result screen right after a WHO-5 with raw < 12; on /home for
-  `lowMoodStreak ≥ 5`. Dismiss is per day (localStorage). Help button is never gated.
-- **Age "no"**: friendly stop screen; nothing stored. Consent (already given) stays; user can delete in Settings later.
-- **1323 copy**: removed "24 ชั่วโมง" from the landing footer until the team verifies it (EVIDENCE #6).
-- **AI weekly summary (Phase 6 optional)**: NOT built. It is optional and hidden without env vars anyway.
-- **Database types** are hand-written in `lib/database.types.ts`; regenerate once the Supabase project exists.
-
-## Still needs humans (cannot be done by code)
-1. Create Supabase project → run `supabase/migrations/0001_init.sql` in the SQL editor → enable Google provider →
-   add redirect URLs `http://localhost:3000/auth/callback` and the Vercel URL `/auth/callback`.
-2. Copy `.env.example` → `.env.local` and fill it (service role key stays server-only).
-3. `content/who5-th.json` — validated Thai WHO-5 text, typed by the team (never AI). Until then: English + banner.
-4. Verify hotlines 1323 / 1669 on official sites.
-5. `npm run seed:demo` (needs DEMO_EMAIL / DEMO_PASSWORD in `.env.local`) → check /patterns shows the PITCH.md numbers.
-6. Deploy to Vercel, then run the PITCH demo script twice on a real phone; Lighthouse a11y on /checkin and /patterns.
-7. RLS check with two accounts (Phase 2 "done when").
+## Pivot 26 Nov (evening): main feature = ทดลองรับเลี้ยง 14 วัน
+- Album removed (migration 0004 drops `photos`; 0002 deleted). AI summary and PDF removed; report = image only.
+- Wording: "ทดลองรับเลี้ยงเพื่อนจากศูนย์", never "สัตว์บำบัด" for shelter animals (they are not trained therapy animals).
+- Tests: WHO-5 + ST-5 only. 2Q/9Q not included: 9Q asks about self-harm and needs clinical follow-up the app cannot provide.
+- ST-5 instruction line is our wording of the published 2–4 week time frame; items/options/cut-offs verbatim.
+- Matching is rules, not a black box: allergy, species and fence needs exclude; other fields add a ✓ reason or a ! caution.
+- Shelter sees: name/username, readiness answers, trial feedback. Never mood, notes, WHO-5, ST-5. Consent checkbox on apply.
+- Baseline tests count if taken from 14 days before start up to day 3; "after" = taken on/after day 14.
+- Return: trial pet becomes a memory (pets.is_current=false, past_period "ทดลองเลี้ยง …"), profile.seeking_pet=true, animal back to available. Who the animal goes to next is the shelter's decision.
+- Shelter animals in the demo are fictional and labelled; the real BKK shelter is shown only as a sourced contact card.
+- Demo account: has 60 days of logs for Patterns plus a trial that started 13 days ago (today = day 14). Shelter staff demo login: username `shelter`.
+- `is_shelter` / `is_demo` can only be changed with the service role (trigger in 0004). To make a real staff account: run `update profiles set is_shelter = true where username = '...'` in the SQL editor.

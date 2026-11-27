@@ -7,7 +7,7 @@
   - Primary: "โทรสายด่วนสุขภาพจิต 1323" → `tel:1323`
   - Secondary: "ถ้ามีอันตรายเร่งด่วน โทร 1669" → `tel:1669`
   - Line: "แอปนี้ไม่ใช่บริการทางการแพทย์ และไม่ได้ประเมินอาการ"
-- TEAM TODO before demo: re-confirm both numbers on official sites (EVIDENCE.md #6).
+- Numbers checked 2026-11-26 (EVIDENCE.md #6). Re-check once on 28 Nov morning.
 - No AI, no logging of who opened the sheet.
 
 ## Gentle cards (never gate anything)

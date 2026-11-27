@@ -1,0 +1,11 @@
+{
+  "name": "Pawlune",
+  "short_name": "Pawlune",
+  "description": "เช็กความพร้อม ทดลองเลี้ยง 14 วัน แล้วตัดสินใจอย่างมีข้อมูล",
+  "start_url": "/home",
+  "display": "standalone",
+  "background_color": "#F2EADB",
+  "theme_color": "#4E6E58",
+  "lang": "th",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

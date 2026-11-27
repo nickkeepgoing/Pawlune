@@ -1,86 +1,107 @@
 @import "tailwindcss";
 
-/* Paw Diary — "a small notebook next to the pet's bowl". Palette: docs/DESIGN_BRIEF.md (AA-checked). */
+/* Tokens from docs/DESIGN_BRIEF.md. Contrast checked in handoff/06_REVIEW.md. */
 @theme {
-  --color-cream: #f2eadb;
-  --color-paper: #fbf7ef;
-  --color-sage: #a9c3a0;
-  --color-sage-soft: #dfe8d8;
-  --color-jade: #4e6e58;
-  --color-jade-deep: #3d5847;
-  --color-bark: #6b4f3a;
-  --color-cocoa: #3e2d22;
-  --color-honey: #c99a5b;
-  --color-line: #e2d6c1;
-
-  --font-sans: var(--font-anuphan), ui-sans-serif, sans-serif;
-  --font-num: var(--font-fraunces), Georgia, serif;
-
-  --text-xs: 0.8125rem;
-  --text-sm: 0.9375rem;
-  --text-base: 1.0625rem;
-  --text-lg: 1.25rem;
-  --text-xl: 1.5rem;
-  --text-2xl: 1.875rem;
-  --text-3xl: 2.375rem;
-
-  --radius-card: 1.25rem;
-  --radius-chip: 999px;
-  --shadow-paper: 0 1px 0 #e7dcc8, 0 10px 24px -14px rgb(62 45 34 / 0.35);
+  --color-cream: #F2EADB;
+  --color-paper: #FBF7EF;
+  --color-sage: #A9C3A0;
+  --color-jade: #4E6E58;
+  --color-bark: #6B4F3A;
+  --color-cocoa: #3E2D22;
+  --color-honey: #C99A5B;
+  --font-thai: var(--font-anuphan), system-ui, sans-serif;
+  --font-num: var(--font-bricolage), var(--font-anuphan), system-ui, sans-serif;
+  --radius-sheet: 1.5rem;
+  --radius-card: 1rem;
 }
 
-html { background: var(--color-cream); }
-body {
-  color: var(--color-cocoa);
-  font-family: var(--font-sans);
-  line-height: 1.6;
-  /* faint paper grain */
-  background-color: var(--color-cream);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .31 0 0 0 0 .23 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
+html { background: var(--color-cream); color: var(--color-cocoa); font-size: clamp(16px, 15px + 0.25vw, 18px); }
+
+/* Responsive shell: phone -> tablet -> desktop. Pages are narrow by default (forms, reading);
+   a page opts into the full width with class "wide" and lays itself out with grids. */
+.shell { width: 100%; margin-inline: auto; padding-inline: 1.25rem; max-width: 28rem; }
+@media (min-width: 768px)  { .shell { max-width: 48rem; padding-inline: 2rem; } }
+@media (min-width: 1024px) { .shell { max-width: 72rem; } }
+.app-main > :not(.wide) { max-width: 40rem; margin-inline: auto; }
+body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-color: transparent; }
+
+/* Numbers get the distinct Latin face */
+.num { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
 
 :focus-visible { outline: 3px solid var(--color-jade); outline-offset: 2px; border-radius: 6px; }
 
-.num { font-family: var(--font-num); font-variant-numeric: tabular-nums lining-nums; }
-
-.paper {
-  background: var(--color-paper);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-paper);
-}
-/* ruled-notebook strip used on headers/notes */
-.ruled {
-  background-image: repeating-linear-gradient(to bottom, transparent 0 1.9rem, var(--color-line) 1.9rem calc(1.9rem + 1px));
+/* Notebook page: faint ruled lines on paper — the app's one decorative device */
+.page {
+  background-color: var(--color-paper);
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(107, 79, 58, 0.08) 31px, rgba(107, 79, 58, 0.08) 32px);
 }
 
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-  min-height: 48px; padding: 0 1.4rem; border-radius: var(--radius-chip);
-  font-weight: 600; transition: transform .15s ease, background .15s ease;
-}
-.btn:active { transform: translateY(1px) scale(.99); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 44px; padding: .625rem 1.25rem; border-radius: 999px; font-weight: 600; }
 .btn-primary { background: var(--color-jade); color: var(--color-cream); }
-.btn-primary:hover { background: var(--color-jade-deep); }
 .btn-primary:disabled { opacity: .55; }
-.btn-ghost { color: var(--color-cocoa); border: 1.5px solid var(--color-bark); background: transparent; }
-.btn-ghost:hover { background: #efe5d3; }
+.btn-ghost { border: 1.5px solid var(--color-bark); color: var(--color-cocoa); background: transparent; }
 
-.field {
-  width: 100%; min-height: 48px; padding: .6rem .9rem; border-radius: 12px;
-  border: 1.5px solid #cdbfa6; background: #fffdf8; color: var(--color-cocoa);
+.chip { display: inline-flex; align-items: center; gap: .375rem; min-height: 44px; padding: .5rem .875rem; border-radius: 999px; border: 1.5px solid rgba(107,79,58,.45); background: var(--color-paper); color: var(--color-cocoa); }
+/* sage on cream is only 1.6:1, so selection is shown by a jade border + check icon, not by fill alone */
+.chip[aria-pressed="true"] { background: var(--color-sage); border-color: var(--color-jade); border-width: 2px; }
+.chip-burden[aria-pressed="true"] { background: #E6DCCB; border-color: var(--color-bark); }
+
+.field { width: 100%; min-height: 44px; border-radius: .75rem; border: 1.5px solid rgba(107,79,58,.45); background: var(--color-paper); padding: .5rem .75rem; color: var(--color-cocoa); }
+
+@keyframes pop { 0% { transform: scale(.6); opacity: 0 } 60% { transform: scale(1.08); opacity: 1 } 100% { transform: scale(1) } }
+@keyframes floatUp { from { transform: translateY(0); opacity: 1 } to { transform: translateY(-48px); opacity: 0 } }
+@keyframes wag { 0%,100% { transform: rotate(-12deg) } 50% { transform: rotate(16deg) } }
+@keyframes sway { 0%,100% { transform: rotate(-6deg) } 50% { transform: rotate(8deg) } }
+@keyframes breathe { 0%,100% { transform: scale(1) } 50% { transform: scale(1.02) } }
+@keyframes blink { 0%,92%,100% { transform: scaleY(1) } 95% { transform: scaleY(.1) } }
+@keyframes hop { 0%,100% { transform: translateY(0) } 40% { transform: translateY(-14px) } }
+
+/* ---------- Playful layer: small reactions to what the person does ---------- */
+.btn { transition: transform .15s ease, background-color .15s ease, box-shadow .15s ease; }
+.btn:active { transform: scale(.96); }
+.btn-primary { box-shadow: 0 4px 0 #34503F; }
+.btn-primary:hover { background: #456350; }
+.btn-primary:active { box-shadow: 0 1px 0 #34503F; transform: translateY(3px); }
+
+/* Selected chip shows a paw instead of relying on colour alone */
+.chip:has(:checked)::before, .chip[aria-pressed="true"]::before {
+  content: ""; width: 1rem; height: 1rem; flex: none; background: var(--color-jade);
+  -webkit-mask: var(--paw) center / contain no-repeat; mask: var(--paw) center / contain no-repeat; animation: pop .25s ease-out;
 }
-.field:focus-visible { border-color: var(--color-jade); }
+:root { --paw: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cellipse cx='12' cy='16' rx='5.2' ry='4.4'/%3E%3Cellipse cx='5.6' cy='10.4' rx='2.2' ry='2.8'/%3E%3Cellipse cx='18.4' cy='10.4' rx='2.2' ry='2.8'/%3E%3Cellipse cx='9.2' cy='5.8' rx='2.1' ry='2.7'/%3E%3Cellipse cx='14.8' cy='5.8' rx='2.1' ry='2.7'/%3E%3C/svg%3E"); }
+.chip { transition: transform .12s ease; }
+.chip:active { transform: scale(.95); }
 
-@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-.rise { animation: rise .5s cubic-bezier(.2,.7,.2,1) both; }
-.rise-2 { animation-delay: .08s; } .rise-3 { animation-delay: .16s; } .rise-4 { animation-delay: .24s; }
+/* Cards that are links lift a little; the animal on them twitches its ears */
+.lift { transition: transform .2s ease, box-shadow .2s ease; }
+.lift:hover { transform: translateY(-3px) rotate(-.3deg); box-shadow: 0 14px 28px -18px rgba(62,45,34,.55); }
+.lift:hover .critter-ears { animation: ears .5s ease-in-out; }
+.critter-ears { transform-box: fill-box; transform-origin: 50% 80%; }
+@keyframes ears { 0%,100% { transform: rotate(0) } 30% { transform: rotate(-6deg) } 60% { transform: rotate(5deg) } }
+
+/* Cat peeking over a card edge: rises a little when the card is hovered */
+.peek { transition: transform .3s cubic-bezier(.3,1.6,.5,1); transform: translateY(5px); }
+.peek-host:hover .peek { transform: translateY(-4px); }
+.peek-eyes { transform-origin: 50% 75%; animation: blink 4.5s infinite; }
+
+.mascot:hover .mascot-ear-l { animation: ears .45s ease-in-out; transform-origin: 70px 60px; }
+.mascot:active svg { transform: scale(.97); }
+.mascot svg { transition: transform .12s ease; }
+.path-cat { animation: bob 1.8s ease-in-out infinite; }
+@keyframes bob { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-4px) } }
+.nav-hop { animation: hop .45s ease-out; }
+
+/* Soft organic shapes behind illustrations */
+.blob { border-radius: 58% 42% 55% 45% / 48% 55% 45% 52%; }
+@keyframes drift { 0%,100% { transform: translate(0,0) rotate(0) } 50% { transform: translate(6px,-8px) rotate(8deg) } }
+@keyframes roll { 0% { transform: translateX(0) rotate(0) } 50% { transform: translateX(26px) rotate(200deg) } 100% { transform: translateX(0) rotate(0) } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
 @media print {
-  body { background: white; }
   .no-print { display: none !important; }
-  .paper { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+  html, body { background: white; }
+  .page { background-image: none; }
 }

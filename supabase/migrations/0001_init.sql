@@ -1,4 +1,4 @@
--- Paw Diary — initial schema. Every table is owner-only via RLS.
+-- Pawlune — initial schema. Every table is owner-only via RLS.
 
 create table public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
