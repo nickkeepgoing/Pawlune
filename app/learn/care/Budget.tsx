@@ -18,7 +18,7 @@ export function Budget() {
       {hint && <span className="mt-0.5 block text-xs text-bark">{hint}</span>}</label>
   );
   return (
-    <section className="rounded-[var(--radius-card)] bg-paper p-5">
+    <section className="card card-quiet">
       <h2 className="text-lg font-bold">คำนวณงบของคุณ</h2>
       <div className="mt-3 grid grid-cols-2 gap-3">
         <Num label="อาหาร+ขนม /เดือน" v={food} set={setFood} hint="1,000–3,000" />

@@ -7,7 +7,7 @@ export function PatternCard({ p }: { p: Pattern }) {
   if (p.status === 'insufficient') {
     const done = Math.min(p.n_with, p.n_without);
     return (
-      <article className="rounded-[var(--radius-card)] border border-bark/20 bg-paper p-4">
+      <article className="card card-quiet">
         <h3 className="font-semibold">{p.label_th}{p.kind === 'burden' && <span className="ml-2 text-sm font-normal text-bark">(ภาระ)</span>}</h3>
         <p className="mt-1 text-sm text-bark">{sentence}</p>
         <div className="mt-3 h-2 overflow-hidden rounded-full bg-cream" role="progressbar" aria-valuemin={0} aria-valuemax={MIN_DAYS_PER_GROUP} aria-valuenow={done} aria-label="ความคืบหน้าของข้อมูล">
@@ -20,7 +20,7 @@ export function PatternCard({ p }: { p: Pattern }) {
   }
   const max = 5;
   return (
-    <article className="page rounded-[var(--radius-card)] border border-bark/20 p-4">
+    <article className="card">
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="font-semibold">{p.label_th}</h3>
         {p.kind === 'burden' && <span className="text-sm text-bark">(ภาระ)</span>}

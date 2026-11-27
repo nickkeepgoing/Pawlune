@@ -1,3 +1,4 @@
+import { OnboardingSteps } from '@/components/OnboardingSteps';
 import { requireStage } from '@/lib/guard';
 import { SubmitButton } from '@/components/SubmitButton';
 import { giveConsent } from '../actions';
@@ -7,7 +8,7 @@ export default async function ConsentPage({ searchParams }: { searchParams: Prom
   const sp = await searchParams;
   return (
     <section className="py-4">
-      <p className="text-sm text-bark">ขั้นที่ 1 จาก 3</p>
+      <OnboardingSteps current={1} />
       <h1 className="mt-1 text-2xl font-bold">ก่อนเริ่ม ขอเล่าเรื่องข้อมูลของคุณ</h1>
       <div className="page mt-5 space-y-3 rounded-[var(--radius-card)] border border-bark/20 p-5">
         <p><b>เราเก็บอะไร:</b> ข้อมูลน้อง (ชื่อ ชนิด รูป) อารมณ์รายวัน กิจกรรมที่ทำกับน้อง โน้ต รูปในอัลบั้ม ความทรงจำของสัตว์ที่เคยเลี้ยง และคำตอบแบบวัด WHO-5</p>

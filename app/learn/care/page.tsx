@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Logo } from '@/components/Logo';
+import { LearnNav } from '@/components/LearnNav';
 import { getState } from '@/lib/data';
 import { Budget } from './Budget';
 
@@ -21,15 +21,12 @@ export default async function CarePage() {
   const { user } = await getState();
   return (
     <main className="mx-auto max-w-md px-5 pb-16 md:max-w-3xl md:px-8">
-      <header className="flex items-center justify-between py-5">
-        <Link href={user ? '/home' : '/'} className="flex items-center"><Logo /></Link>
-        <a href="tel:1323" className="text-sm text-bark">สายด่วนสุขภาพจิต <span className="num font-semibold text-jade">1323</span></a>
-      </header>
+      <LearnNav current="/learn/care" homeHref={user ? '/home' : '/'} />
       <h1 className="text-2xl font-bold">ก่อนรับน้อง: คู่มือและค่าใช้จ่าย</h1>
       <p className="mt-1 text-bark">หมาและแมวอยู่กับเรา 10–15 ปี เตรียมเงินและเวลาให้พร้อมก่อน <Src href={S.thairath}>ไทยรัฐ</Src></p>
 
       <div className="mt-6 space-y-6">
-        <section className="rounded-[var(--radius-card)] bg-paper p-5">
+        <section className="card card-quiet">
           <h2 className="text-lg font-bold">ค่าใช้จ่ายที่ต้องเตรียม (บาท)</h2>
           <table className="mt-2 w-full text-left text-sm">
             <tbody>
@@ -60,7 +57,7 @@ export default async function CarePage() {
 
         <Budget />
 
-        <section className="rounded-[var(--radius-card)] bg-paper p-5">
+        <section className="card card-quiet">
           <h2 className="text-lg font-bold">รับจากศูนย์ กทม. ต้องพร้อมอะไร</h2>
           <p className="mt-1 text-sm">ศูนย์ควบคุมสุนัขกรุงเทพมหานคร (ประเวศ) ตรวจสุขภาพ คัดกรองโรค ฉีดวัคซีน และทำหมันน้องทุกตัวก่อนให้รับ <Src href={S.bkkAdopt}>เดลินิวส์</Src></p>
           <ol className="mt-2 list-decimal space-y-0.5 pl-5 text-sm">
@@ -70,7 +67,7 @@ export default async function CarePage() {
           <p className="mt-2 text-sm">ติดต่อ: Facebook &quot;BKK Adopter&quot; · โทร 0 2328 7460, 0 2245 3311 (จ.–ศ. 08.30–16.30 น.) <Src href={S.bkkContact}>THE STANDARD</Src></p>
         </section>
 
-        <section className="rounded-[var(--radius-card)] bg-paper p-5">
+        <section className="card card-quiet">
           <h2 className="text-lg font-bold">14 วันแรกที่บ้าน</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
             <li><b>มุมสงบของน้อง:</b> ที่นอน น้ำสะอาด และจุดขับถ่ายที่เดิมทุกวัน (แมวใช้กระบะทราย)</li>

@@ -32,7 +32,7 @@ export function TherapyTypes() {
   const [hop, setHop] = useState(0);
   const t = TYPES[sel];
   return (
-    <section className="page rounded-[var(--radius-card)] border border-bark/20 p-5">
+    <section className="card">
       <h2 className="text-lg font-bold">สัตว์ช่วยงานคนได้ 3 แบบ</h2>
       <p className="mt-1 text-sm text-bark">แตะแต่ละแบบ แล้วดูว่าถั่วแดงทำหน้าที่อะไร</p>
       <div className="mt-3 flex flex-wrap gap-2" role="tablist" aria-label="ประเภท">
@@ -59,7 +59,7 @@ export function TherapyTypes() {
 export function QuickCheck() {
   const [ans, setAns] = useState<null | 'home' | 'team'>(null);
   return (
-    <section className="rounded-[var(--radius-card)] bg-paper p-5">
+    <section className="card card-quiet">
       <h2 className="text-lg font-bold">ลองทายดู</h2>
       <p className="mt-1">แบบไหนเรียกว่าสัตว์บำบัด</p>
       <div className="mt-3 grid gap-2">

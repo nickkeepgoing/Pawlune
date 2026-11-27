@@ -63,13 +63,26 @@ export function CheckinForm({ petName, species, photoUrl, dateLabel, initial, la
         </div>
       </div>
 
+      {/* The one required answer, so it gets the weight on the screen rather than
+          sitting smaller than the optional chips below it. */}
       <fieldset>
         <legend className="font-semibold">อารมณ์วันนี้</legend>
-        <div className="mt-2 grid grid-cols-5 gap-1" role="radiogroup" aria-label="อารมณ์วันนี้">
+        <div className="mt-2 grid grid-cols-5 gap-1.5 sm:gap-2" role="radiogroup" aria-label="อารมณ์วันนี้">
           {[1, 2, 3, 4, 5].map((m) => (
-            <button key={m} type="button" role="radio" aria-checked={mood === m} onClick={() => setMood(m)}
-              className={`flex min-h-20 flex-col items-center justify-center gap-1 rounded-[var(--radius-card)] border-2 text-xs ${mood === m ? 'border-jade bg-sage text-cocoa' : 'border-transparent text-bark'}`}>
-              <MoodFace mood={m} className="h-10 w-10" />{MOOD_LABELS[m - 1]}
+            <button
+              key={m}
+              type="button"
+              role="radio"
+              aria-checked={mood === m}
+              onClick={() => setMood(m)}
+              className={`flex min-h-[6.5rem] flex-col items-center justify-center gap-1.5 rounded-[var(--radius-card)] border-2 px-1 text-xs transition-colors ${
+                mood === m
+                  ? 'border-jade bg-sage font-semibold text-cocoa'
+                  : 'border-bark/15 bg-paper text-bark hover:border-bark/35'
+              }`}
+            >
+              <MoodFace mood={m} className="h-12 w-12 sm:h-14 sm:w-14" />
+              {MOOD_LABELS[m - 1]}
             </button>
           ))}
         </div>
@@ -87,9 +100,13 @@ export function CheckinForm({ petName, species, photoUrl, dateLabel, initial, la
         </div>
       </fieldset>
 
-      <fieldset>
+      {/* Recording the cost of pet care, not only the good parts, is the thing this app
+          does that a generic mood tracker does not — so it gets its own surface instead of
+          looking like a second row of the same chips. */}
+      <fieldset className="card card-warn">
         <legend className="font-semibold">ภาระวันนี้ <span className="text-sm font-normal text-bark">เลือกได้หลายข้อ</span></legend>
-        <div className="mt-2 flex flex-wrap gap-2">
+        <p className="mt-0.5 text-sm text-bark">วันที่เหนื่อยก็บันทึกได้ ไม่ได้แปลว่าคุณเลี้ยงไม่ดี</p>
+        <div className="mt-3 flex flex-wrap gap-2">
           {BURDEN.map((a) => (<button key={a} type="button" className="chip chip-burden" aria-pressed={acts.has(a)} onClick={() => toggle(a)}>{acts.has(a) && <IconCheck />}{ACTIVITIES[a].th}</button>))}
         </div>
       </fieldset>
@@ -106,7 +123,11 @@ export function CheckinForm({ petName, species, photoUrl, dateLabel, initial, la
       </div>
 
       {error && <p className="font-semibold" role="alert">{error}</p>}
-      <button type="button" onClick={save} disabled={state === 'saving'} className="btn btn-primary w-full text-lg">{state === 'saving' ? 'กำลังบันทึก…' : 'บันทึก'}</button>
+
+      {/* Stays within thumb reach on a phone however long the chip list runs. */}
+      <div className="sticky bottom-20 z-10 -mx-5 bg-gradient-to-t from-cream via-cream to-transparent px-5 pb-1 pt-4 lg:static lg:mx-0 lg:bg-none lg:p-0">
+        <button type="button" onClick={save} disabled={state === 'saving'} className="btn btn-primary w-full text-lg">{state === 'saving' ? 'กำลังบันทึก…' : 'บันทึก'}</button>
+      </div>
     </section>
   );
 }

@@ -25,8 +25,8 @@ export default async function HomePage() {
         ) : (
           <Link href="/adopt" className="block rounded-[var(--radius-card)] bg-jade p-5 text-cream"><b className="block text-lg">หาเพื่อนจากศูนย์</b><span className="text-sm">ทดลองเลี้ยง 14 วัน แล้วตัดสินใจจากข้อมูลใจของคุณเอง</span></Link>
         )}
-        <Link href="/learn/care" className="block rounded-[var(--radius-card)] bg-paper p-4"><b>คู่มือเลี้ยงและค่าใช้จ่าย</b><span className="block text-sm text-bark">อ่านก่อนรับน้อง ราคาจากแหล่งข้อมูลจริง</span></Link>
-        <Link href="/wellbeing/st5" className="block rounded-[var(--radius-card)] bg-paper p-4"><b>แบบประเมินความเครียด ST-5</b><span className="block text-sm text-bark">5 ข้อ ของกรมสุขภาพจิต</span></Link>
+        <Link href="/learn/care" className="card card-quiet lift block"><b>คู่มือเลี้ยงและค่าใช้จ่าย</b><span className="block text-sm text-bark">อ่านก่อนรับน้อง ราคาจากแหล่งข้อมูลจริง</span></Link>
+        <Link href="/wellbeing/st5" className="card card-quiet lift block"><b>แบบประเมินความเครียด ST-5</b><span className="block text-sm text-bark">5 ข้อ ของกรมสุขภาพจิต</span></Link>
       </div>
     );
   }
@@ -45,22 +45,27 @@ export default async function HomePage() {
   const daysToFirstPattern = Math.max(0, MIN_DAYS_PER_GROUP - s.days_logged);
 
   return (
-    <div className="wide space-y-5 py-2">
+    /* One column, read top to bottom: the thing to do today sits at the top and the
+       record of what has happened follows under it. Two columns made people choose
+       where to look first on a screen that has one job. */
+    <div className="space-y-4 py-2">
       <div className="flex items-center justify-between gap-3">
-      <div>
-        <h1 className="text-2xl font-bold">สวัสดี{profile?.display_name ? ` ${profile.display_name}` : ''}</h1>
-        <p className="text-bark">วันนี้กับ{pet!.name}{sinceAdoption !== null && sinceAdoption >= 0 && <> · อยู่ด้วยกันมา <span className="num">{sinceAdoption.toLocaleString('th-TH')}</span> วัน</>}</p>
-      </div>
-      <Mascot className="h-24 w-24 md:h-28 md:w-28" />
+        <div>
+          <h1 className="text-2xl font-bold">สวัสดี{profile?.display_name ? ` ${profile.display_name}` : ''}</h1>
+          <p className="text-bark">
+            วันนี้กับ{pet!.name}
+            {sinceAdoption !== null && sinceAdoption >= 0 && <> อยู่ด้วยกันมา <span className="num">{sinceAdoption.toLocaleString('th-TH')}</span> วัน</>}
+          </p>
+        </div>
+        <Mascot className="h-20 w-20 shrink-0 md:h-24 md:w-24" />
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2 lg:items-start"><div className="space-y-5">
       {gentle && <GentleCard today={today} />}
 
       {todayRow ? (
-        <Link href="/checkin" className="page flex items-center gap-4 rounded-[var(--radius-card)] border border-bark/20 p-4">
+        <Link href="/checkin" className="card lift flex items-center gap-4">
           <MoodFace mood={todayRow.mood} className="h-12 w-12 text-jade" />
-          <div><p className="font-semibold">บันทึกวันนี้แล้ว · {MOOD_LABELS[todayRow.mood - 1]}</p><p className="text-sm text-bark">แตะเพื่อแก้ไข</p></div>
+          <div><p className="font-semibold">บันทึกวันนี้แล้ว {MOOD_LABELS[todayRow.mood - 1]}</p><p className="text-sm text-bark">แตะเพื่อแก้ไข</p></div>
         </Link>
       ) : (
         <Link href="/checkin" className="flex items-center justify-between rounded-[var(--radius-card)] bg-jade p-5 text-cream">
@@ -70,37 +75,36 @@ export default async function HomePage() {
       )}
 
       {trial?.status === 'active' && trial.start_date && (
-        <Link href="/trial" className="block rounded-[var(--radius-card)] border-[1.5px] border-jade bg-paper p-4">
-          <p className="font-semibold">ทดลองเลี้ยง{animal?.name} · วันที่ <span className="num">{Math.min(trialDay(trial.start_date, today), TRIAL_DAYS)}</span>/{TRIAL_DAYS}</p>
+        <Link href="/trial" className="card lift block">
+          <p className="font-semibold">ทดลองเลี้ยง{animal?.name} วันที่ <span className="num">{Math.min(trialDay(trial.start_date, today), TRIAL_DAYS)}</span>/{TRIAL_DAYS}</p>
           <p className="text-sm text-bark">{trialDay(trial.start_date, today) >= TRIAL_DAYS ? 'ครบแล้ว ดูผลและตัดสินใจ' : 'บันทึกทุกวัน เพื่อใช้ตัดสินใจวันที่ 14'}</p>
         </Link>
       )}
 
       {due && (
-        <Link href="/wellbeing/take" className="block rounded-[var(--radius-card)] border-[1.5px] border-honey bg-paper p-4">
+        <Link href="/wellbeing/take" className="card card-warn lift block">
           <p className="font-semibold">WHO-5 ถึงเวลาแล้ว</p>
           <p className="text-sm text-bark">5 คำถามเกี่ยวกับ 2 สัปดาห์ที่ผ่านมา ใช้เวลาไม่ถึงนาที</p>
         </Link>
       )}
 
       <section className="grid grid-cols-2 gap-3">
-        <div className="rounded-[var(--radius-card)] bg-paper p-4">
+        <div className="card card-quiet">
           <p className="flex items-center gap-1 text-sm text-bark"><IconFlame className="h-4 w-4" /> บันทึกต่อเนื่อง</p>
-          <p className="num mt-1 text-3xl font-semibold">{s.streak}<span className="ml-1 font-[family-name:var(--font-thai)] text-base font-normal">วัน</span></p>
+          <p className="stat mt-1"><span className="stat-value">{s.streak}</span><span className="stat-label">วัน</span></p>
         </div>
-        <div className="rounded-[var(--radius-card)] bg-paper p-4">
+        <div className="card card-quiet">
           <p className="text-sm text-bark">บันทึกทั้งหมด</p>
-          <p className="num mt-1 text-3xl font-semibold">{s.days_logged}<span className="ml-1 font-[family-name:var(--font-thai)] text-base font-normal">วัน</span></p>
+          <p className="stat mt-1"><span className="stat-value">{s.days_logged}</span><span className="stat-label">วัน</span></p>
         </div>
       </section>
 
-      </div><div className="space-y-5">
-      <section className="rounded-[var(--radius-card)] bg-paper p-4">
+      <section className="card card-quiet">
         <h2 className="font-semibold">อารมณ์ 7 วันล่าสุด</h2>
         <MoodLine points={recentMoods(checkins, today, 7)} />
       </section>
 
-      <section className="rounded-[var(--radius-card)] bg-paper p-4">
+      <section className="card card-quiet">
         <h2 className="font-semibold">สัปดาห์นี้กับ{pet!.name}</h2>
         {topThisWeek.length ? (
           <ul className="mt-2 space-y-1">
@@ -111,7 +115,6 @@ export default async function HomePage() {
           ? <p className="mt-3 text-sm text-bark">บันทึกต่ออีกไม่กี่วัน แล้วเราจะเริ่มเห็นรูปแบบของคุณกับน้อง (อย่างน้อยอีก <span className="num">{daysToFirstPattern}</span> วัน)</p>
           : <Link href="/patterns" className="mt-3 inline-block font-semibold text-jade underline underline-offset-4">ดูรูปแบบของคุณ</Link>}
       </section>
-      </div></div>
     </div>
   );
 }

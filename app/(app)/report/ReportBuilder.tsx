@@ -58,18 +58,32 @@ export function ReportBuilder({ data }: { data: ReportData }) {
       <div className="no-print space-y-4">
         <h1 className="text-2xl font-bold">รายงานของฉัน</h1>
         <p className="text-bark">เลือกส่วนที่อยากใส่ แล้วบันทึกเป็นรูปภาพไว้เก็บเอง หรือนำไปให้นักจิตวิทยาหรือผู้เชี่ยวชาญดูเองได้ แอปไม่ได้ส่งข้อมูลให้ใคร</p>
-        <fieldset className="space-y-1 rounded-[var(--radius-card)] bg-paper p-4">
-          <legend className="sr-only">ส่วนของรายงาน</legend>
-          {SECTIONS.map((s) => (
+        {/* Two groups, not one list: the private sections are a different decision from
+            the rest, so they sit apart instead of carrying a parenthesis. */}
+        <fieldset className="card card-quiet space-y-1">
+          <legend className="mb-2 font-semibold">ส่วนที่ใส่ในรายงาน</legend>
+          {SECTIONS.filter((s) => s.id !== 'notes' && s.id !== 'memories').map((s) => (
             <label key={s.id} className="flex min-h-11 items-center gap-3">
               <input type="checkbox" checked={on[s.id]} onChange={(e) => setOn({ ...on, [s.id]: e.target.checked })} className="h-5 w-5 accent-[#4E6E58]" />
-              {s.label}{(s.id === 'notes' || s.id === 'memories') && <span className="text-sm text-bark">(ปิดไว้ก่อน เพราะเป็นเรื่องส่วนตัว)</span>}
+              {s.label}
             </label>
           ))}
         </fieldset>
+
+        <fieldset className="card card-warn space-y-1">
+          <legend className="mb-1 font-semibold">ส่วนที่เป็นเรื่องส่วนตัว</legend>
+          <p className="mb-2 text-sm text-bark">ปิดไว้ให้ก่อน เปิดเฉพาะตอนที่ตั้งใจจะให้ใครอ่านจริงๆ</p>
+          {SECTIONS.filter((s) => s.id === 'notes' || s.id === 'memories').map((s) => (
+            <label key={s.id} className="flex min-h-11 items-center gap-3">
+              <input type="checkbox" checked={on[s.id]} onChange={(e) => setOn({ ...on, [s.id]: e.target.checked })} className="h-5 w-5 accent-[#4E6E58]" />
+              {s.label}
+            </label>
+          ))}
+        </fieldset>
+        <p className="text-sm text-bark">ตัวอย่างรายงานอยู่ด้านล่าง เปลี่ยนตามที่เลือกทันที</p>
         <button className="btn btn-primary w-full" onClick={ask} disabled={busy}>{busy ? 'กำลังทำรูป…' : 'บันทึกรายงานเป็นรูปภาพ'}</button>
         {img && (
-          <div className="space-y-2 rounded-[var(--radius-card)] bg-paper p-4" role="status">
+          <div className="card card-quiet space-y-2" role="status">
             <p className="font-semibold">รูปรายงานพร้อมแล้ว</p>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={img.url} alt="ตัวอย่างรูปรายงาน" className="max-h-80 w-full rounded-lg border border-bark/20 object-contain object-top" />

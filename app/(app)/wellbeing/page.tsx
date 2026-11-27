@@ -26,7 +26,7 @@ export default async function WellbeingPage({ searchParams }: { searchParams: Pr
       <h1 className="text-2xl font-bold">สุขภาวะทางใจ</h1>
 
       {result && (
-        <section className="page rounded-[var(--radius-card)] border border-bark/20 p-5" role="status">
+        <section className="card" role="status">
           <p className="text-bark">ผลครั้งนี้</p>
           <p className="mt-1 text-xl font-bold">คะแนนสุขภาวะทางใจ <span className="num text-3xl">{result.pct}</span>/100</p>
           {prev && <p className="mt-1">{result.pct > prev.pct ? 'สูงขึ้น' : result.pct < prev.pct ? 'ต่ำลง' : 'เท่าเดิม'}จากครั้งก่อน (<span className="num">{prev.pct}</span>)</p>}
@@ -34,7 +34,7 @@ export default async function WellbeingPage({ searchParams }: { searchParams: Pr
       )}
       {result && result.raw < 12 && <GentleCard today={today} />}
       {st5Result && st5Level && (
-        <section className="page rounded-[var(--radius-card)] border border-bark/20 p-5" role="status">
+        <section className="card" role="status">
           <p className="text-bark">ผล ST-5 ครั้งนี้</p>
           <p className="mt-1 text-xl font-bold">คะแนน <span className="num text-3xl">{st5Result.raw}</span>/15 · {st5Level.level}</p>
           <p className="mt-1 text-xs text-bark">เกณฑ์ของกรมสุขภาพจิต: 0–4 น้อย · 5–7 ปานกลาง · 8–9 มาก · 10–15 มากที่สุด</p>
@@ -47,20 +47,23 @@ export default async function WellbeingPage({ searchParams }: { searchParams: Pr
       )}
 
       <div className="grid gap-5 lg:grid-cols-3">
-      <section className="rounded-[var(--radius-card)] bg-paper p-4">
+      <section className="card card-quiet">
         <h2 className="font-semibold">คะแนนสุขภาวะทางใจ ทุก 2 สัปดาห์</h2>
+        {who5.length > 0 && (<p className="stat mt-2"><span className="stat-value">{who5.at(-1)!.pct}</span><span className="stat-label">คะแนนล่าสุด จาก 100</span></p>)}
         {who5.length ? <PointLine label="คะแนน WHO-5" min={0} max={100} points={who5.map((w) => ({ x: thaiDate(w.taken_on, false), y: w.pct }))} />
           : <p className="mt-1 text-bark">ยังไม่มีคำตอบ ตอบครั้งแรกได้เลย ใช้เวลาไม่ถึงนาที</p>}
       </section>
 
-      <section className="rounded-[var(--radius-card)] bg-paper p-4">
+      <section className="card card-quiet">
         <div className="flex items-baseline justify-between gap-2"><h2 className="font-semibold">ความเครียด ST-5 (0–15)</h2><Link href="/wellbeing/st5" className="text-sm font-semibold text-jade underline underline-offset-4">ทำแบบประเมิน</Link></div>
+        {st5.length > 0 && (<p className="stat mt-2"><span className="stat-value">{st5.at(-1)!.raw}</span><span className="stat-label">คะแนนล่าสุด จาก 15</span></p>)}
         {st5.length ? <PointLine label="คะแนน ST-5" min={0} max={15} points={st5.map((x) => ({ x: thaiDate(x.taken_on, false), y: x.raw }))} />
           : <p className="mt-1 text-bark">ยังไม่มีคำตอบ 5 ข้อ ไม่ถึงนาที</p>}
       </section>
 
-      <section className="rounded-[var(--radius-card)] bg-paper p-4">
+      <section className="card card-quiet">
         <h2 className="font-semibold">อารมณ์เฉลี่ยรายสัปดาห์</h2>
+        {weeks.length > 0 && (<p className="stat mt-2"><span className="stat-value">{weeks.at(-1)!.mean_mood.toFixed(2)}</span><span className="stat-label">สัปดาห์ล่าสุด</span></p>)}
         {weeks.length ? <PointLine label="อารมณ์เฉลี่ยรายสัปดาห์" min={1} max={5} points={weeks.map((w) => ({ x: `ส.${w.week}`, y: w.mean_mood }))} />
           : <p className="mt-1 text-bark">เริ่มบันทึกรายวัน แล้วกราฟจะขึ้นที่นี่</p>}
         <p className="mt-2 text-xs text-bark">ส.1 = สัปดาห์ที่ 1 นับ 7 วันจากวันแรกที่บันทึก</p>

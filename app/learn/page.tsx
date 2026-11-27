@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Logo } from '@/components/Logo';
+import { LearnNav } from '@/components/LearnNav';
 import { IconPaw } from '@/components/Icons';
 import { getState } from '@/lib/data';
 import { TapPet } from './TapPet';
@@ -21,15 +21,12 @@ export default async function LearnPage() {
   const { user } = await getState();
   return (
     <main className="mx-auto max-w-md px-5 pb-16 md:max-w-3xl md:px-8">
-      <header className="flex items-center justify-between py-5">
-        <Link href={user ? '/home' : '/'} className="flex items-center"><Logo /></Link>
-        <a href="tel:1323" className="text-sm text-bark">สายด่วนสุขภาพจิต <span className="num font-semibold text-jade">1323</span></a>
-      </header>
+      <LearnNav current="/learn" homeHref={user ? '/home' : '/'} />
       <h1 className="text-2xl font-bold">สัตว์เลี้ยงกับใจ งานวิจัยว่าอย่างไร</h1>
       <p className="mt-1 text-bark">แตะน้องได้นะ</p>
 
       <div className="mt-8 space-y-8">
-        <section className="page flex items-center gap-4 rounded-[var(--radius-card)] border border-bark/20 p-5">
+        <section className="card flex items-center gap-4">
           <TapPet kind="dog" />
           <div>
             <h2 className="font-semibold">เลี้ยงสัตว์ ไม่เท่ากับ สัตว์บำบัด</h2>
@@ -38,7 +35,7 @@ export default async function LearnPage() {
           </div>
         </section>
 
-        <section className="page rounded-[var(--radius-card)] border border-bark/20 p-5">
+        <section className="card">
           <h2 className="font-semibold">งานวิจัยยังได้ผลหลายทาง</h2>
           <p className="mt-1 text-sm">การทบทวนงานวิจัย 54 ชิ้นเรื่องการเลี้ยงสัตว์กับสุขภาพจิตของเจ้าของ แบ่งผลได้ดังนี้</p>
           <div className="mt-4 grid grid-cols-4 gap-2">
@@ -47,7 +44,7 @@ export default async function LearnPage() {
           <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8705563/" className="mt-3 inline-block text-xs text-jade underline" target="_blank" rel="noreferrer">Pet Ownership and Quality of Life: A Systematic Review (Vet Sci, 2021)</a>
         </section>
 
-        <section className="page flex items-center gap-4 rounded-[var(--radius-card)] border border-bark/20 p-5">
+        <section className="card flex items-center gap-4">
           <div>
             <h2 className="font-semibold">การเลี้ยงสัตว์มีภาระด้วย</h2>
             <p className="mt-1 text-sm">การทบทวนงานวิจัย 17 ชิ้นพบทั้งประโยชน์ และภาระทั้งด้านการดูแลและด้านความรู้สึก รวมถึงผลของการสูญเสียสัตว์เลี้ยง Pawlune จึงให้บันทึกทั้งเรื่องดีและเรื่องที่เหนื่อย</p>

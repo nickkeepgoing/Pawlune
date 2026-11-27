@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Logo } from '@/components/Logo';
+import { LearnNav } from '@/components/LearnNav';
 import { getState } from '@/lib/data';
 import { TapPet } from '../TapPet';
 import { QuickCheck, TherapyTypes } from './TherapyTypes';
@@ -26,10 +26,7 @@ export default async function TherapyPage() {
   const { user } = await getState();
   return (
     <main className="mx-auto max-w-md px-5 pb-16 md:max-w-3xl md:px-8">
-      <header className="flex items-center justify-between py-5">
-        <Link href={user ? '/home' : '/'} className="flex items-center"><Logo /></Link>
-        <a href="tel:1323" className="text-sm text-bark">สายด่วนสุขภาพจิต <span className="num font-semibold text-jade">1323</span></a>
-      </header>
+      <LearnNav current="/learn/therapy" homeHref={user ? '/home' : '/'} />
       <Link href="/learn" className="text-sm font-semibold text-jade underline underline-offset-4">สัตว์เลี้ยงกับใจ</Link>
       <div className="mt-2 flex items-end justify-between gap-3">
         <div>
@@ -41,7 +38,7 @@ export default async function TherapyPage() {
 
       <p className="mt-4 rounded-[var(--radius-card)] border-[1.5px] border-bark bg-paper p-4 text-sm"><b>Pawlune ไม่ใช่บริการบำบัด</b> และไม่ได้จัดหาสัตว์บำบัด หน้านี้อธิบายว่างานนี้คืออะไร เพื่อไม่ให้สับสนกับการรับเลี้ยงสัตว์ ถ้ารู้สึกหนักใจ ควรคุยกับผู้เชี่ยวชาญ หรือโทร 1323</p>
       <div className="mt-6 space-y-6">
-        <section className="rounded-[var(--radius-card)] bg-paper p-5">
+        <section className="card card-quiet">
           <h2 className="text-lg font-bold">สรุปใน 3 บรรทัด</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             <li>คือการใช้สัตว์อย่างมีเป้าหมายและมีแผน ในงานสุขภาพ การศึกษา หรือบริการสังคม โดยมีคนที่รู้จักทั้งผู้รับบริการและตัวสัตว์ดูแล <Src href={SRC.iahaio}>IAHAIO</Src></li>
@@ -52,7 +49,7 @@ export default async function TherapyPage() {
 
         <TherapyTypes />
 
-        <section className="rounded-[var(--radius-card)] bg-paper p-5">
+        <section className="card card-quiet">
           <h2 className="text-lg font-bold">ในไทยใช้กับใคร</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
             <li>ทีมสุนัขนักบำบัดไทยทำงานกับสถานพยาบาลและโรงเรียน เช่น ผู้สูงวัยที่มีภาวะสมองเสื่อม ผู้ป่วยจิตเวช เด็กที่มีความต้องการพิเศษ เด็กตาบอดและหูหนวก <Src href={SRC.thaiTeams}>MGR Online</Src></li>
@@ -60,7 +57,7 @@ export default async function TherapyPage() {
           </ul>
         </section>
 
-        <section className="rounded-[var(--radius-card)] bg-paper p-5">
+        <section className="card card-quiet">
           <h2 className="text-lg font-bold">งานวิจัยว่าอย่างไร</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
             <li>ในผู้ป่วยในโรงพยาบาล รายงานความเครียด ความเจ็บปวด และความกังวลลดลง ความเสี่ยงคือภูมิแพ้ การติดเชื้อ และอุบัติเหตุ ซึ่งลดได้ด้วยมาตรการสุขอนามัย <Src href={SRC.inpatients}>ทบทวนงานวิจัย</Src></li>

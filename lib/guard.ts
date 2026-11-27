@@ -1,15 +1,17 @@
 import 'server-only';
 import { redirect } from 'next/navigation';
-import { getState } from '@/lib/data';
+import { freshOnboardingFlags, getState } from '@/lib/data';
 
 type Stage = 'consent' | 'age' | 'pet' | 'ready';
 
 export async function currentStage(): Promise<Stage | 'signed_out'> {
-  const { user, profile, pet } = await getState();
+  const { user, pet } = await getState();
   if (!user) return 'signed_out';
-  if (!profile?.consented_at) return 'consent';
-  if (!profile.age_confirmed_20plus) return 'age';
-  if (!pet && !profile.seeking_pet && !profile.is_shelter) return 'pet';
+  // Read the flags fresh: a stale memo here bounces the user back to the step they just finished.
+  const flags = await freshOnboardingFlags(user.id);
+  if (!flags?.consented_at) return 'consent';
+  if (!flags.age_confirmed_20plus) return 'age';
+  if (!pet && !flags.seeking_pet && !flags.is_shelter) return 'pet';
   return 'ready';
 }
 

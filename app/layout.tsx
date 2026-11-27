@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Anuphan, Bricolage_Grotesque } from 'next/font/google';
 import './globals.css';
+import { THEME_INIT } from '@/components/ThemeToggle';
 
 const anuphan = Anuphan({ subsets: ['thai', 'latin'], weight: ['400', '500', '600', '700'], variable: '--font-anuphan', display: 'swap' });
 const bricolage = Bricolage_Grotesque({ subsets: ['latin'], variable: '--font-bricolage', display: 'swap' });
@@ -12,11 +13,22 @@ export const metadata: Metadata = {
   icons: { icon: '/icon.svg' },
 };
 
-export const viewport: Viewport = { themeColor: '#4E6E58', width: 'device-width', initialScale: 1 };
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#F3EADC' },
+    { media: '(prefers-color-scheme: dark)', color: '#191310' },
+  ],
+  width: 'device-width',
+  initialScale: 1,
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="th" className={`${anuphan.variable} ${bricolage.variable}`}>
+    <html lang="th" className={`${anuphan.variable} ${bricolage.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Applies the saved theme before first paint — no flash of the wrong palette. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+      </head>
       <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );

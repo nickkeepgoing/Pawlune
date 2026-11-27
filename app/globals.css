@@ -2,17 +2,67 @@
 
 /* Tokens from docs/DESIGN_BRIEF.md. Contrast checked in handoff/06_REVIEW.md. */
 @theme {
-  --color-cream: #F2EADB;
-  --color-paper: #FBF7EF;
-  --color-sage: #A9C3A0;
-  --color-jade: #4E6E58;
-  --color-bark: #6B4F3A;
-  --color-cocoa: #3E2D22;
-  --color-honey: #C99A5B;
+  /* Every colour points at a swappable variable so one attribute on <html> re-themes the app.
+     Names keep their meaning in both themes: cream = page, paper = raised surface,
+     cocoa = body text, bark = muted text, jade = primary, honey/sage = accents. */
+  --color-cream: var(--c-cream);
+  --color-paper: var(--c-paper);
+  --color-sage: var(--c-sage);
+  --color-jade: var(--c-jade);
+  --color-bark: var(--c-bark);
+  --color-cocoa: var(--c-cocoa);
+  --color-honey: var(--c-honey);
   --font-thai: var(--font-anuphan), system-ui, sans-serif;
   --font-num: var(--font-bricolage), var(--font-anuphan), system-ui, sans-serif;
-  --radius-sheet: 1.5rem;
-  --radius-card: 1rem;
+  /* Radius carries meaning instead of being one value on everything.
+     A sheet is a page in a diary, so it keeps one square corner where it was torn
+     from the pad; a card is a shelter's index card, filed flat. */
+  --radius-sheet: 1.25rem 1.25rem 1.25rem 0.25rem;
+  --radius-card: 0.5rem;
+}
+
+/* ---- Warm earth palette, light ---- */
+:root {
+  --c-cream:  #F3EADC;  /* page */
+  --c-paper:  #FCF8F1;  /* raised surface */
+  --c-sage:   #A9C3A0;
+  --c-jade:   #46654F;  /* primary */
+  --c-bark:   #6B4F3A;  /* muted text */
+  --c-cocoa:  #352620;  /* body text */
+  --c-honey:  #C08A4A;
+  --c-line:   rgba(53, 38, 32, .14);
+  --c-shadow: rgba(53, 38, 32, .5);
+  color-scheme: light;
+}
+
+/* ---- Same earth palette after sundown: warm browns, never blue-grey ---- */
+:root[data-theme="dark"] {
+  --c-cream:  #191310;
+  --c-paper:  #241B16;
+  --c-sage:   #3C4F40;
+  --c-jade:   #8FB79A;  /* lifted so it still passes contrast on a dark page */
+  --c-bark:   #C2AB92;
+  --c-cocoa:  #F4EADC;
+  --c-honey:  #E0A866;
+  --c-line:   rgba(244, 234, 220, .16);
+  --c-shadow: rgba(0, 0, 0, .65);
+  color-scheme: dark;
+}
+
+/* Follow the device until the visitor picks a side themselves. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --c-cream:  #191310;
+    --c-paper:  #241B16;
+    --c-sage:   #3C4F40;
+    --c-jade:   #8FB79A;
+    --c-bark:   #C2AB92;
+    --c-cocoa:  #F4EADC;
+    --c-honey:  #E0A866;
+    --c-line:   rgba(244, 234, 220, .16);
+    --c-shadow: rgba(0, 0, 0, .65);
+    color-scheme: dark;
+  }
 }
 
 html { background: var(--color-cream); color: var(--color-cocoa); font-size: clamp(16px, 15px + 0.25vw, 18px); }
@@ -33,7 +83,7 @@ body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-co
 /* Notebook page: faint ruled lines on paper — the app's one decorative device */
 .page {
   background-color: var(--color-paper);
-  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(107, 79, 58, 0.08) 31px, rgba(107, 79, 58, 0.08) 32px);
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, var(--c-line) 31px, var(--c-line) 32px);
 }
 
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 44px; padding: .625rem 1.25rem; border-radius: 999px; font-weight: 600; }
@@ -41,12 +91,12 @@ body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-co
 .btn-primary:disabled { opacity: .55; }
 .btn-ghost { border: 1.5px solid var(--color-bark); color: var(--color-cocoa); background: transparent; }
 
-.chip { display: inline-flex; align-items: center; gap: .375rem; min-height: 44px; padding: .5rem .875rem; border-radius: 999px; border: 1.5px solid rgba(107,79,58,.45); background: var(--color-paper); color: var(--color-cocoa); }
+.chip { display: inline-flex; align-items: center; gap: .375rem; min-height: 44px; padding: .5rem .875rem; border-radius: 999px; border: 1.5px solid color-mix(in srgb, var(--color-bark) 55%, transparent); background: var(--color-paper); color: var(--color-cocoa); }
 /* sage on cream is only 1.6:1, so selection is shown by a jade border + check icon, not by fill alone */
 .chip[aria-pressed="true"] { background: var(--color-sage); border-color: var(--color-jade); border-width: 2px; }
-.chip-burden[aria-pressed="true"] { background: #E6DCCB; border-color: var(--color-bark); }
+.chip-burden[aria-pressed="true"] { background: color-mix(in srgb, var(--color-honey) 28%, var(--color-paper)); border-color: var(--color-bark); }
 
-.field { width: 100%; min-height: 44px; border-radius: .75rem; border: 1.5px solid rgba(107,79,58,.45); background: var(--color-paper); padding: .5rem .75rem; color: var(--color-cocoa); }
+.field { width: 100%; min-height: 44px; border-radius: .75rem; border: 1.5px solid color-mix(in srgb, var(--color-bark) 55%, transparent); background: var(--color-paper); padding: .5rem .75rem; color: var(--color-cocoa); }
 
 @keyframes pop { 0% { transform: scale(.6); opacity: 0 } 60% { transform: scale(1.08); opacity: 1 } 100% { transform: scale(1) } }
 @keyframes floatUp { from { transform: translateY(0); opacity: 1 } to { transform: translateY(-48px); opacity: 0 } }
@@ -59,9 +109,9 @@ body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-co
 /* ---------- Playful layer: small reactions to what the person does ---------- */
 .btn { transition: transform .15s ease, background-color .15s ease, box-shadow .15s ease; }
 .btn:active { transform: scale(.96); }
-.btn-primary { box-shadow: 0 4px 0 #34503F; }
-.btn-primary:hover { background: #456350; }
-.btn-primary:active { box-shadow: 0 1px 0 #34503F; transform: translateY(3px); }
+.btn-primary { box-shadow: 0 4px 0 color-mix(in srgb, var(--color-jade) 72%, #000); }
+.btn-primary:hover { background: color-mix(in srgb, var(--color-jade) 88%, var(--color-cocoa)); }
+.btn-primary:active { box-shadow: 0 1px 0 color-mix(in srgb, var(--color-jade) 72%, #000); transform: translateY(3px); }
 
 /* Selected chip shows a paw instead of relying on colour alone */
 .chip:has(:checked)::before, .chip[aria-pressed="true"]::before {
@@ -74,7 +124,7 @@ body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-co
 
 /* Cards that are links lift a little; the animal on them twitches its ears */
 .lift { transition: transform .2s ease, box-shadow .2s ease; }
-.lift:hover { transform: translateY(-3px) rotate(-.3deg); box-shadow: 0 14px 28px -18px rgba(62,45,34,.55); }
+.lift:hover { transform: translateY(-3px) rotate(-.3deg); box-shadow: 0 14px 28px -18px var(--c-shadow); }
 .lift:hover .critter-ears { animation: ears .5s ease-in-out; }
 .critter-ears { transform-box: fill-box; transform-origin: 50% 80%; }
 @keyframes ears { 0%,100% { transform: rotate(0) } 30% { transform: rotate(-6deg) } 60% { transform: rotate(5deg) } }
@@ -105,3 +155,104 @@ body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-co
   html, body { background: white; }
   .page { background-image: none; }
 }
+
+/* ---- Scroll-driven storytelling (landing page) -------------------------------
+   Chrome/Edge run these natively; Safari/Firefox fall back to "already visible".
+   The global prefers-reduced-motion rule above switches every one of them off. */
+@keyframes reveal  { from { opacity: 0; transform: translateY(28px) } to { opacity: 1; transform: none } }
+@keyframes popIn   { from { opacity: 0; transform: scale(.92) translateY(16px) } to { opacity: 1; transform: none } }
+@keyframes fillX   { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+@keyframes sink    { to { transform: translateY(-56px) scale(.94); opacity: .35 } }
+@keyframes driftIn { from { opacity: 0; transform: translateX(-28px) rotate(-4deg) } to { opacity: 1; transform: none } }
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal   { animation: reveal both ease-out;  animation-timeline: view(); animation-range: entry 8% cover 34%; }
+    .pop-in   { animation: popIn both cubic-bezier(.2,1.4,.4,1); animation-timeline: view(); animation-range: entry 6% cover 30%; }
+    .drift-in { animation: driftIn both ease-out; animation-timeline: view(); animation-range: entry 8% cover 36%; }
+    /* Progress line through the 14-day steps. */
+    .track-fill { transform-origin: left; animation: fillX both linear; animation-timeline: view(); animation-range: entry 40% cover 85%; }
+    /* Hero settles back as the story takes over. */
+    .hero-sink { animation: sink both linear; animation-timeline: view(); animation-range: exit 10% exit 100%; }
+  }
+}
+
+/* Stagger inside a grid without a wrapper per card. */
+.stagger > *:nth-child(2) { animation-delay: 60ms }
+.stagger > *:nth-child(3) { animation-delay: 120ms }
+.stagger > *:nth-child(4) { animation-delay: 180ms }
+
+/* Photo slots: a real photo drops straight in, the frame stays identical. */
+.photo-slot { background:
+  repeating-linear-gradient(45deg, var(--c-line) 0 10px, transparent 10px 20px), var(--color-paper); }
+
+/* Vertical twin of .track-fill, for the 4-step progress line. */
+@keyframes fillY { from { transform: scaleY(0) } to { transform: scaleY(1) } }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .track-fill-y { transform-origin: top; animation: fillY both linear; animation-timeline: view(); animation-range: entry 35% cover 80%; }
+  }
+}
+@supports not (animation-timeline: view()) { .track-fill-y { display: none } }
+
+/* ---- Hero day scrubber ------------------------------------------------------
+   Styled on both engines; the thumb is a 44px target even though it looks small. */
+.day-scrub { -webkit-appearance: none; appearance: none; background: transparent; height: 44px; cursor: grab; }
+.day-scrub:active { cursor: grabbing; }
+.day-scrub::-webkit-slider-runnable-track { height: 3px; border-radius: 999px; background: #4A4038; }
+.day-scrub::-moz-range-track { height: 3px; border-radius: 999px; background: #4A4038; }
+.day-scrub::-moz-range-progress { height: 3px; border-radius: 999px; background: #E8B877; }
+.day-scrub::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; margin-top: -10px;
+  width: 23px; height: 23px; border-radius: 999px; background: #E8B877;
+  border: 5px solid #2A211B; box-shadow: 0 0 0 1.5px #E8B877;
+}
+.day-scrub::-moz-range-thumb {
+  width: 23px; height: 23px; border-radius: 999px; background: #E8B877;
+  border: 5px solid #2A211B; box-shadow: 0 0 0 1.5px #E8B877;
+}
+.day-scrub:focus-visible { outline: none; }
+.day-scrub:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 1.5px #E8B877, 0 0 0 5px rgba(232,184,119,.45); }
+.day-scrub:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 1.5px #E8B877, 0 0 0 5px rgba(232,184,119,.45); }
+
+/* =============================================================================
+   Shared surfaces — the layer every screen is built from.
+
+   The subject is a paper record kept while a cat decides whether a home fits:
+   a diary page, a shelter's index card, a number written in a box. The surfaces
+   below say that, instead of being one rounded card repeated at every level.
+   ============================================================================= */
+
+/* An index card: flat, filed, with a coloured spine down the left edge like a
+   divider in a shelter's drawer. Used for records — a pet, a pattern, a day. */
+.card {
+  position: relative;
+  background: var(--color-paper);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-card);
+  border-left: 3px solid var(--color-jade);
+  padding: 1.1rem 1.1rem 1.1rem 1.25rem;
+}
+.card-quiet { border-left-color: color-mix(in srgb, var(--color-bark) 40%, transparent); }
+.card-warn  { border-left-color: var(--color-honey); }
+
+/* Cards that lead somewhere answer the pointer with the spine, not with a float.
+   A drop shadow on every card was doing no work. */
+.lift { transition: border-color .18s ease, background-color .18s ease; }
+.lift:hover { transform: none; box-shadow: none; background: color-mix(in srgb, var(--color-sage) 14%, var(--color-paper)); }
+.lift:hover .critter-ears { animation: ears .5s ease-in-out; }
+
+/* The number is the content on most screens: day 1 of 14, mood 4, WHO-5 64.
+   One treatment for all of them so they read as the same kind of fact. */
+.stat { display: flex; align-items: baseline; gap: .5rem; }
+.stat-value { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-weight: 600; font-size: clamp(2.2rem, 1.4rem + 3vw, 3.4rem); line-height: .85; }
+.stat-label { color: var(--color-bark); font-size: .95rem; }
+
+/* A third button weight, so a screen can offer a way out without two heavy buttons
+   fighting for the same attention. */
+.btn-quiet { background: transparent; color: var(--color-bark); font-weight: 600; }
+.btn-quiet:hover { color: var(--color-cocoa); background: color-mix(in srgb, var(--color-bark) 8%, transparent); }
+
+/* Section heading: the rule sits under the words and stops where they stop,
+   so it measures the heading rather than decorating the full width. */
+.heading-rule { display: inline-block; padding-bottom: .4rem; border-bottom: 2px solid var(--color-honey); }

@@ -7,3 +7,6 @@ out/
 next-env.d.ts
 .vercel
 .DS_Store
+
+# Machine-local symlink created by "npx skills add"; the real files live in .agents/
+.claude/skills/

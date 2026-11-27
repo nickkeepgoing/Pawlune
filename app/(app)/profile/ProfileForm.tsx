@@ -46,7 +46,7 @@ export function ProfileForm({ uid, avatarUrl, animal, hasPhoto, displayName, use
         <p className="mt-2 text-xs text-bark">รูปโปรไฟล์เห็นได้คนเดียว</p>
       </section>
 
-      <section className="rounded-[var(--radius-card)] bg-paper p-4">
+      <section className="card card-quiet">
         <h2 className="font-semibold">{hasPhoto ? 'หรือใช้รูปสัตว์แทน' : 'เลือกรูปสัตว์'}</h2>
         <div className="mt-3 grid grid-cols-3 gap-3">
           {ANIMALS.map((a) => (
@@ -60,7 +60,7 @@ export function ProfileForm({ uid, avatarUrl, animal, hasPhoto, displayName, use
         </div>
       </section>
 
-      <form action={action} className="space-y-3 rounded-[var(--radius-card)] bg-paper p-4">
+      <form action={action} className="card card-quiet space-y-3">
         <label className="block"><span className="font-semibold">ชื่อที่ให้แอปเรียก</span><input name="display_name" defaultValue={displayName} maxLength={40} className="field mt-1" /></label>
         <label className="block"><span className="font-semibold">ชื่อผู้ใช้</span> {google && !username && <span className="text-sm text-bark">(ตั้งไว้ จะใช้ล็อกอินด้วยรหัสผ่านได้ภายหลัง)</span>}
           <input name="username" defaultValue={username} autoCapitalize="none" spellCheck={false} className="field mt-1" />

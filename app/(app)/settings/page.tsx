@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { requireStage } from '@/lib/guard';
 import { SubmitButton } from '@/components/SubmitButton';
 import { signOut } from '@/app/login/actions';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { deleteAll, updateName } from './actions';
 
 export default async function SettingsPage({ searchParams }: { searchParams: Promise<{ confirm?: string; failed?: string }> }) {
@@ -11,7 +12,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
     <div className="space-y-6 py-2">
       <h1 className="text-2xl font-bold">ตั้งค่า</h1>
 
-      <section className="rounded-[var(--radius-card)] bg-paper p-4">
+      <section className="card card-quiet">
         <form action={updateName} className="space-y-3">
           <label className="block"><span className="font-semibold">ชื่อที่ให้แอปเรียก</span><input name="name" defaultValue={profile?.display_name ?? ''} maxLength={40} className="field mt-1" /></label>
           <SubmitButton className="btn btn-ghost">บันทึกชื่อ</SubmitButton>
@@ -19,13 +20,34 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
         <p className="mt-3 text-sm text-bark">บัญชี: {user!.email}</p>
       </section>
 
-      <section className="grid gap-2">
-        <Link href="/profile" className="btn btn-ghost w-full justify-between bg-paper">โปรไฟล์และรูปโปรไฟล์</Link>
-        <Link href="/pets" className="btn btn-ghost w-full justify-between bg-paper">น้องและความทรงจำ</Link>
-        <Link href="/report" className="btn btn-ghost w-full justify-between bg-paper">รายงานของฉัน (รูปภาพ)</Link>
-        <Link href="/learn" className="btn btn-ghost w-full justify-between bg-paper">สัตว์เลี้ยงกับใจ งานวิจัยว่าอย่างไร</Link>
-        <Link href="/learn/care" className="btn btn-ghost w-full justify-between bg-paper">คู่มือเลี้ยงและค่าใช้จ่าย</Link>
-        {profile?.is_shelter && <Link href="/shelter" className="btn btn-ghost w-full justify-between bg-paper">หน้าศูนย์: คำขอทดลองเลี้ยง</Link>}
+      <section className="card card-quiet flex items-center justify-between gap-4">
+        <div>
+          <h2 className="font-semibold">หน้าตาแอป</h2>
+          <p className="text-sm text-bark">สลับระหว่างโหมดสว่างกับโหมดมืด</p>
+        </div>
+        <ThemeToggle />
+      </section>
+
+      {/* A settings list, not a stack of identical buttons: each row is a destination,
+          so it reads like a list you scan rather than five calls to action. */}
+      <section className="overflow-hidden rounded-[var(--radius-card)] border border-bark/15 bg-paper">
+        <ul className="divide-y divide-bark/10">
+          {[
+            ['/profile', 'โปรไฟล์และรูปโปรไฟล์'],
+            ['/pets', 'น้องและความทรงจำ'],
+            ['/report', 'รายงานของฉัน'],
+            ['/learn', 'สัตว์เลี้ยงกับใจ งานวิจัยว่าอย่างไร'],
+            ['/learn/care', 'คู่มือเลี้ยงและค่าใช้จ่าย'],
+            ...(profile?.is_shelter ? [['/shelter', 'หน้าศูนย์ คำขอทดลองเลี้ยง']] : []),
+          ].map(([href, label]) => (
+            <li key={href}>
+              <Link href={href} className="flex min-h-14 items-center justify-between gap-3 px-4 hover:bg-cream">
+                <span>{label}</span>
+                <span aria-hidden className="text-bark">›</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="rounded-[var(--radius-card)] border-[1.5px] border-bark/40 bg-paper p-4">

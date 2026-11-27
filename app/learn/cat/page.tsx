@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Logo } from '@/components/Logo';
+import { LearnNav } from '@/components/LearnNav';
 import { Mascot } from '@/components/Mascot';
 import { getState } from '@/lib/data';
 
@@ -46,10 +46,7 @@ export default async function CatGuidePage() {
   const { user } = await getState();
   return (
     <main className="mx-auto max-w-md px-5 pb-16 md:max-w-3xl md:px-8">
-      <header className="flex items-center justify-between py-5">
-        <Link href={user ? '/home' : '/'} className="flex items-center"><Logo /></Link>
-        <span className="flex gap-3 text-sm font-semibold text-jade"><Link href="/learn/dog" className="underline underline-offset-4">คู่มือหมา</Link><Link href="/learn/care" className="underline underline-offset-4">ค่าใช้จ่าย</Link></span>
-      </header>
+      <LearnNav current="/learn/cat" homeHref={user ? '/home' : '/'} />
       <div className="flex items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold md:text-3xl">14 วันแรกกับแมวจากศูนย์</h1>

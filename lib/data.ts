@@ -46,6 +46,24 @@ export const getState = cache(async () => {
   return { supabase, user, profile: profile as Profile | null, pet: pet as Pet | null } as const;
 });
 
+/**
+ * The onboarding flags, read straight from the database every time.
+ *
+ * `getState` is memoised for the whole request, and a server action plus the render that
+ * follows it can share one request. A guard built on the memo therefore sees the profile as
+ * it was *before* the action wrote to it, decides the user has not consented yet, and sends
+ * them back to the page they just completed. The onboarding guard reads through this instead.
+ */
+export async function freshOnboardingFlags(userId: string) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from('profiles')
+    .select('consented_at, age_confirmed_20plus, is_shelter, seeking_pet')
+    .eq('id', userId)
+    .maybeSingle();
+  return data as Pick<Profile, 'consented_at' | 'age_confirmed_20plus' | 'is_shelter' | 'seeking_pet'> | null;
+}
+
 /** Engine input. Never selects `note` (docs/DATABASE.md). */
 export async function loadCheckins(): Promise<Checkin[]> {
   const { supabase, user } = await getState();

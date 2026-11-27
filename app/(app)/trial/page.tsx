@@ -23,10 +23,29 @@ export default async function TrialPage({ searchParams }: { searchParams: Promis
 
   if (!trial || !animal) {
     return (
-      <div className="wide mx-auto max-w-4xl space-y-4 py-2">
+      <div className="wide mx-auto max-w-4xl space-y-6 py-2">
         <h1 className="text-2xl font-bold">ทดลองเลี้ยง 14 วัน</h1>
         <p className="max-w-2xl">ศูนย์อนุมัติก่อน แล้วอยู่กับน้อง 14 วันพร้อมคำแนะนำรายวัน แจ้งปัญหาได้ทุกเมื่อ ครบแล้วค่อยตัดสินใจว่าจะรับเป็นครอบครัวหรือคืนให้ศูนย์หาบ้านที่เหมาะกว่า</p>
-        <Link href="/adopt" className="btn btn-primary w-full sm:w-auto">หาเพื่อนที่เข้ากับฉัน</Link>
+
+        {/* An empty screen should show what the thing is, not just name it. */}
+        <ol className="grid gap-3 sm:grid-cols-2">
+          {[
+            ['ก่อนเริ่ม', 'เช็กความพร้อมของบ้าน แล้วดูน้องที่เข้ากันได้ พร้อมเหตุผลว่าเข้ากันตรงไหน'],
+            ['วันที่ 1–3', 'น้องมักซ่อนตัวและกินน้อย แอปบอกว่าอะไรปกติ และอาการไหนต้องรีบไปหาหมอ'],
+            ['วันที่ 4–13', 'บันทึกวันละสิบวินาที ศูนย์เห็นเฉพาะความเป็นอยู่ของน้อง ไม่เห็นบันทึกอารมณ์ของคุณ'],
+            ['วันที่ 14', 'ดูบันทึกทั้งสิบสี่วันของตัวเอง แล้วเลือกรับเป็นครอบครัว หรือคืนให้ศูนย์'],
+          ].map(([when, what], i) => (
+            <li key={when} className={`card ${i === 3 ? '' : 'card-quiet'}`}>
+              <p className="num text-sm font-semibold text-jade">{when}</p>
+              <p className="mt-1 text-sm">{what}</p>
+            </li>
+          ))}
+        </ol>
+
+        <div className="flex flex-wrap items-center gap-4">
+          <Link href="/adopt" className="btn btn-primary w-full sm:w-auto">หาเพื่อนที่เข้ากับฉัน</Link>
+          <Link href="/learn/cat" className="btn btn-quiet">อ่านคู่มือ 14 วันแรกก่อน</Link>
+        </div>
       </div>
     );
   }
