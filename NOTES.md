@@ -35,6 +35,11 @@
 ## Hosting region
 Supabase is in ap-northeast-2 (Seoul), so `vercel.json` pins server functions to `icn1`. If the database ever moves, move this with it.
 
+## Floating nav bar and the "Moonlit" look (28 Nov)
+- One floating bar at the bottom on phone and desktop, daily check-in raised in the middle. No top navigation in the app.
+- Look taken from the team's design zip (gradient page, glass cards, looped Thai font, aurora dark theme). Only the
+  design: that zip runs on MySQL with its own sign-in, which the fixed stack here does not allow.
+
 ## Help button
 "ต้องการคนรับฟัง" is a floating button on every signed-in screen (CLAUDE.md rule 4), bottom right. On phones the
 check-in save button leaves room beside it; any new bottom-anchored control must do the same.

@@ -152,7 +152,7 @@ export default async function Landing() {
         ข้ามไปเนื้อหาหลัก
       </a>
 
-      <header className="sticky top-0 z-40 border-b border-bark/10 bg-cream/90 backdrop-blur">
+      <header className="app-header sticky top-0 z-40">
         <div className={`${WRAP} flex items-center justify-between gap-6 py-3 md:py-4`}>
           <Logo className="text-lg" />
           <nav aria-label="ลิงก์หลัก" className="flex items-center gap-3 text-sm lg:gap-2">

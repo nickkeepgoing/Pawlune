@@ -41,7 +41,7 @@ export function HelpButton() {
         type="button"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
-        className={`no-print fixed right-3 z-30 inline-flex min-h-12 items-center gap-2 whitespace-nowrap rounded-full bg-paper py-1.5 pl-1.5 pr-4 text-sm font-semibold text-cocoa shadow-[0_14px_28px_-10px_var(--c-shadow)] ring-1 ring-jade/30 transition-transform hover:-translate-y-0.5 active:translate-y-0 md:bottom-6 md:right-6 bottom-[5.5rem]`}
+        className={`no-print fixed right-3 z-30 inline-flex min-h-12 items-center gap-2 whitespace-nowrap rounded-full bg-paper py-1.5 pl-1.5 pr-4 text-sm font-semibold text-cocoa shadow-[0_14px_28px_-10px_var(--c-shadow)] ring-1 ring-jade/30 transition-transform hover:-translate-y-0.5 active:translate-y-0 bottom-[7.25rem] md:right-5 lg:bottom-6 lg:right-6`}
       >
         <span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-jade text-cream"><IconChat className="h-5 w-5" /></span>
         ต้องการคนรับฟัง

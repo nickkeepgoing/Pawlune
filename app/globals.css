@@ -12,13 +12,18 @@
   --color-bark: var(--c-bark);
   --color-cocoa: var(--c-cocoa);
   --color-honey: var(--c-honey);
-  --font-thai: var(--font-anuphan), system-ui, sans-serif;
-  --font-num: var(--font-bricolage), var(--font-anuphan), system-ui, sans-serif;
+  --font-thai: var(--font-body), system-ui, sans-serif;
+  --font-head: var(--font-display), var(--font-body), system-ui, sans-serif;
+  --font-num: var(--font-display), var(--font-body), system-ui, sans-serif;
+  /* Thai has tall vowels and tone marks: the default small-text line heights are too tight. */
+  --text-xs--line-height: 1.6;
+  --text-sm--line-height: 1.65;
+  --text-base--line-height: 1.7;
   /* Radius carries meaning instead of being one value on everything.
      A sheet is a page in a diary, so it keeps one square corner where it was torn
      from the pad; a card is a shelter's index card, filed flat. */
-  --radius-sheet: 1.25rem 1.25rem 1.25rem 0.25rem;
-  --radius-card: 0.5rem;
+  --radius-sheet: 1.75rem;
+  --radius-card: 1.25rem;
 }
 
 /* ---- Warm earth palette, light ---- */
@@ -35,17 +40,17 @@
   color-scheme: light;
 }
 
-/* ---- Same earth palette after sundown: warm browns, never blue-grey ---- */
+/* ---- Moonlit Aurora, the dark palette ---- */
 :root[data-theme="dark"] {
-  --c-cream:  #191310;
-  --c-paper:  #241B16;
-  --c-sage:   #3C4F40;
-  --c-jade:   #8FB79A;  /* lifted so it still passes contrast on a dark page */
-  --c-bark:   #C2AB92;
-  --c-cocoa:  #F4EADC;
-  --c-honey:  #E0A866;
-  --c-line:   rgba(244, 234, 220, .16);
-  --c-shadow: rgba(0, 0, 0, .65);
+  --c-cream:  #0B0A1A;
+  --c-paper:  #181636;
+  --c-sage:   #26415A;
+  --c-jade:   #A99BFF;  /* bright enough for links on the dark page */
+  --c-bark:   #B3AFD6;
+  --c-cocoa:  #EEECFF;
+  --c-honey:  #FFAE8F;
+  --c-line:   rgba(169, 155, 255, .20);
+  --c-shadow: rgba(0, 0, 0, .75);
   color-scheme: dark;
 }
 
@@ -279,3 +284,132 @@ body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-co
 .paw-step { display: inline-block; animation: paw-step 1.2s ease-in-out infinite; }
 @keyframes chapter-fill { from { width: 0 } to { width: 100% } }
 .chapter-fill { animation-name: chapter-fill; animation-timing-function: linear; animation-fill-mode: both; }
+
+/* ---- Answer tiles (readiness form) -------------------------------------------
+   Large targets, a visible tick, and a heavy border when chosen, so the answer does
+   not depend on telling two soft colours apart. */
+.tile {
+  display: flex; align-items: center; gap: .875rem; min-height: 4rem; padding: .75rem 1.1rem;
+  border: 2px solid color-mix(in srgb, var(--color-bark) 26%, transparent); border-radius: 1.25rem;
+  background: var(--color-paper); font-weight: 600; cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+.tile:hover { border-color: color-mix(in srgb, var(--color-jade) 60%, transparent); transform: translateY(-1px); }
+.tile:active { transform: scale(.99); }
+.tile:has(input:checked) {
+  border-color: var(--color-jade); border-width: 3px; padding: calc(.75rem - 1px) calc(1.1rem - 1px);
+  background: color-mix(in srgb, var(--color-sage) 38%, var(--color-paper));
+  box-shadow: 0 12px 22px -16px var(--c-shadow);
+}
+.tile:has(input:focus-visible) { outline: 3px solid var(--color-jade); outline-offset: 3px; }
+.tile-mark {
+  display: grid; place-items: center; width: 2rem; height: 2rem; flex: none; border-radius: 999px;
+  border: 2px solid color-mix(in srgb, var(--color-bark) 40%, transparent); color: transparent;
+}
+.tile:has(input:checked) .tile-mark { background: var(--color-jade); border-color: var(--color-jade); color: var(--color-cream); }
+
+/* =============================================================================
+   Moonlit design: one effect layer (gradient page, soft glass, glow) driven by
+   variables, with a warm earth palette by day and an aurora palette by night.
+   Gradient stops under white text are kept dark enough for AA contrast.
+   ============================================================================= */
+:root {
+  --grad: linear-gradient(120deg, #34573F 0%, #46704E 55%, #8A5A28 100%);
+  --grad-warm: linear-gradient(120deg, #8A5A28 0%, #A4523A 100%);
+  --grad-soft: linear-gradient(120deg, rgba(78, 110, 88, .16), rgba(201, 154, 91, .20));
+  --glow: 0 10px 26px -12px rgba(52, 87, 63, .65);
+  --glow-strong: 0 18px 38px -14px rgba(52, 87, 63, .8);
+  --hair: rgba(107, 79, 58, .14);
+  --hair-hover: rgba(78, 110, 88, .45);
+  --glass: rgba(255, 251, 244, .80);
+  --page-grad: linear-gradient(165deg, #FBEFD9 0%, #F3ECDD 34%, #E2EEDC 68%, #F6E2D6 100%);
+  --aur-1: rgba(246, 205, 130, .60);
+  --aur-2: rgba(150, 192, 142, .55);
+  --aur-3: rgba(235, 166, 142, .42);
+  --dots: rgba(107, 79, 58, .10);
+}
+:root[data-theme="dark"] {
+  --grad: linear-gradient(120deg, #5B46E0 0%, #2563C9 52%, #0F7A75 100%);
+  --grad-warm: linear-gradient(120deg, #A8452F 0%, #A93A74 100%);
+  --grad-soft: linear-gradient(120deg, rgba(106, 85, 240, .24), rgba(25, 184, 176, .18));
+  --glow: 0 10px 30px -10px rgba(106, 85, 240, .75);
+  --glow-strong: 0 18px 44px -12px rgba(106, 85, 240, .9);
+  --hair: rgba(169, 155, 255, .18);
+  --hair-hover: rgba(169, 155, 255, .55);
+  --glass: rgba(24, 22, 54, .76);
+  --page-grad: linear-gradient(165deg, #0B0A1A 0%, #15112F 45%, #0A1B25 100%);
+  --aur-1: rgba(106, 85, 240, .38);
+  --aur-2: rgba(25, 184, 176, .24);
+  --aur-3: rgba(238, 95, 168, .20);
+  --dots: rgba(169, 155, 255, .12);
+}
+
+h1, h2, h3 { font-family: var(--font-head); line-height: 1.45; text-wrap: balance; }
+
+/* The gradient page: fixed, so it stays put while content scrolls over it. */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+  background:
+    radial-gradient(44rem 32rem at 100% -8%, var(--aur-1), transparent 62%),
+    radial-gradient(40rem 32rem at -10% 38%, var(--aur-2), transparent 60%),
+    radial-gradient(40rem 28rem at 70% 112%, var(--aur-3), transparent 60%),
+    var(--page-grad);
+}
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image: radial-gradient(var(--dots) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(to bottom, #000, transparent 70%);
+}
+
+/* Page titles in gradient ink. Titles that sit on a coloured panel keep their own colour. */
+.app-main h1:not(.text-cream, .bg-jade *) {
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+  padding-block: .08em;
+}
+:root[data-theme="dark"] .app-main h1:not(.text-cream, .bg-jade *) { background-image: linear-gradient(120deg, #B9AEFF, #7FC4FF, #6FE0D6); }
+
+.app-header { background: color-mix(in srgb, var(--color-cream) 62%, transparent); backdrop-filter: blur(16px) saturate(1.4); border-bottom: 1px solid var(--hair); }
+
+/* Cards: soft glass with a hairline and a warm shadow. */
+.card, .page { background-color: var(--glass); border: 1px solid var(--hair); border-radius: var(--radius-card); box-shadow: 0 16px 36px -26px var(--c-shadow); }
+.card { padding: 1.15rem 1.25rem; }
+.card-warn { border: 2px solid var(--color-honey); }
+.card-quiet { border-style: dashed; }
+.lift:hover { background: var(--color-paper); border-color: var(--hair-hover); box-shadow: var(--glow); transform: translateY(-2px); }
+.bg-paper[class*="radius-card"], .bg-paper[class*="radius-sheet"] { background-color: var(--glass); box-shadow: 0 16px 36px -26px var(--c-shadow); }
+
+/* Buttons: gradient with a light sweep on hover. */
+.btn-primary { position: relative; overflow: hidden; background: var(--grad); color: #fff; box-shadow: var(--glow); }
+.btn-primary:hover { background: var(--grad); box-shadow: var(--glow-strong); }
+.btn-primary:active { box-shadow: var(--glow); }
+.btn-primary::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .35) 50%, transparent 70%); transform: translateX(-120%); transition: transform .6s ease; }
+@media (hover: hover) { .btn-primary:hover::after { transform: translateX(120%); } }
+.btn-ghost { background: var(--glass); border-color: var(--hair-hover); }
+.bg-jade { background-image: var(--grad); }
+.bg-sage\/25, .bg-sage\/30, .bg-sage\/35 { background-image: var(--grad-soft); }
+
+.chip { background: var(--glass); border-color: var(--hair-hover); }
+.chip[aria-pressed="true"], .chip:has(:checked) { background: var(--grad); color: #fff; border-color: transparent; box-shadow: var(--glow); }
+.chip-burden[aria-pressed="true"], .chip-burden:has(:checked) { background: var(--grad-warm); color: #fff; border-color: transparent; }
+.chip:has(:checked)::before, .chip[aria-pressed="true"]::before { background: #fff; }
+
+.field { border-radius: 1rem; border-color: color-mix(in srgb, var(--color-bark) 40%, transparent); }
+.field:focus { outline: none; border-color: var(--color-jade); box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-jade) 24%, transparent); }
+input[type="radio"], input[type="checkbox"] { accent-color: var(--color-jade) !important; }
+
+/* ---- The floating bar ---- */
+.dock { background: color-mix(in srgb, var(--color-paper) 88%, transparent); backdrop-filter: blur(18px) saturate(1.5); border: 1px solid var(--hair); box-shadow: 0 22px 44px -18px var(--c-shadow), 0 2px 8px -4px var(--c-shadow); }
+.dock-link .dock-icon, .dock-link .dock-fab { transition: background-color .2s ease, transform .2s cubic-bezier(.3, 1.6, .5, 1); }
+.dock-link[aria-current="page"] .dock-icon { background: var(--grad-soft); }
+.dock-fab { background: var(--grad); color: #fff; border: 4px solid var(--color-paper); box-shadow: var(--glow-strong); }
+@media (hover: hover) {
+  .dock-link:hover .dock-icon { background: var(--grad-soft); transform: translateY(-3px); }
+  .dock-link:hover .dock-fab { transform: translateY(-4px) scale(1.06) rotate(-6deg); }
+}
+
+/* Dark: anything printed on the aurora gradient is white; "cream" there means white. */
+:root[data-theme="dark"] .bg-jade { --color-cream: #FFFFFF; --color-jade: #4B38C9; color: #FFFFFF; }
+:root[data-theme="dark"] .bg-honey { color: #1B0E1C; }
+
+@media print { body::before, body::after { display: none; } .card, .page { box-shadow: none; } }

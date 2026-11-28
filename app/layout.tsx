@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from 'next';
-import { Anuphan, Bricolage_Grotesque } from 'next/font/google';
+import { IBM_Plex_Sans_Thai_Looped, Mali } from 'next/font/google';
 import './globals.css';
 import { THEME_INIT } from '@/components/ThemeToggle';
 
-const anuphan = Anuphan({ subsets: ['thai', 'latin'], weight: ['400', '500', '600', '700'], variable: '--font-anuphan', display: 'swap' });
-const bricolage = Bricolage_Grotesque({ subsets: ['latin'], variable: '--font-bricolage', display: 'swap' });
+// Body: looped Thai reads clearly at small sizes. Titles and numbers: Mali, rounded and soft. Both are OFL.
+const body = IBM_Plex_Sans_Thai_Looped({ subsets: ['thai', 'latin'], weight: ['400', '500', '600', '700'], variable: '--font-body', display: 'swap' });
+const display = Mali({ subsets: ['thai', 'latin'], weight: ['500', '600', '700'], variable: '--font-display', display: 'swap' });
 
 export const metadata: Metadata = {
   title: 'Pawlune — More Than Adoption. A Better Bond.',
@@ -21,7 +22,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="th" className={`${anuphan.variable} ${bricolage.variable}`} suppressHydrationWarning>
+    <html lang="th" className={`${body.variable} ${display.variable}`} suppressHydrationWarning>
       <head>
         {/* Applies the saved theme before first paint — no flash of the wrong palette. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />

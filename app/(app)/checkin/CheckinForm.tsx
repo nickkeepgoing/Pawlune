@@ -126,7 +126,7 @@ export function CheckinForm({ petName, species, photoUrl, dateLabel, initial, la
 
       {/* Stays within thumb reach on a phone however long the chip list runs. */}
       {/* On a phone the right side is left free for the floating help button, so the two sit side by side. */}
-      <div className="sticky bottom-20 z-10 -mx-5 bg-gradient-to-t from-cream via-cream to-transparent pb-1 pl-5 pr-[11.75rem] pt-4 md:static md:mx-0 md:bg-none md:p-0">
+      <div className="sticky bottom-[7rem] z-10 -mx-5 pb-1 pl-5 pr-[11.75rem] pt-4 md:static md:mx-0 md:p-0">
         <button type="button" onClick={save} disabled={state === 'saving'} className="btn btn-primary w-full text-lg">{state === 'saving' ? 'กำลังบันทึก…' : 'บันทึก'}</button>
       </div>
     </section>
