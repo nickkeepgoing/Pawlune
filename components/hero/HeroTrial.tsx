@@ -1,7 +1,6 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
 const TrialScene = dynamic(() => import('./TrialScene'), { ssr: false });
@@ -9,11 +8,13 @@ const TrialScene = dynamic(() => import('./TrialScene'), { ssr: false });
 const DAYS = 14;
 
 /**
- * What the visitor sees first: the fourteen days themselves, draggable.
+ * An illustration of the fourteen days, draggable, inside the landing page's
+ * "experience" section. The section supplies the heading, so this renders none.
  *
- * Scrubbing the track moves the photograph, the line of copy and the 3D light together,
- * so the hero demonstrates the product's one idea instead of describing it. Nothing here
- * animates unprompted — every movement answers the person's drag or arrow key.
+ * Scrubbing the track moves the photograph, the line of copy and the 3D markers together.
+ * It plays through once when first seen, can be paused, and stops as soon as it is touched.
+ * It exists only on the landing page: it is not a
+ * screen in the app, and the copy around it must not say it is.
  */
 
 type Beat = { until: number; photo: string; alt: string; line: string };
@@ -43,7 +44,7 @@ const BEATS: Beat[] = [
 
 const beatFor = (day: number) => BEATS.find((b) => day <= b.until) ?? BEATS[BEATS.length - 1];
 
-export function HeroTrial({ ctaHref, ctaText }: { ctaHref: string; ctaText: string }) {
+export function HeroTrial() {
   const [day, setDay] = useState(1);
   // The 3D reads this without re-rendering React on every frame of a drag.
   const dayRef = useRef(1);
@@ -56,59 +57,74 @@ export function HeroTrial({ ctaHref, ctaText }: { ctaHref: string; ctaText: stri
 
   const beat = beatFor(day);
 
+  // Play the fortnight once when it comes into view, so it explains itself without a drag.
+  const [playing, setPlaying] = useState(false);
+  const rootRef = useRef<HTMLElement>(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting || started.current) return;
+      started.current = true;
+      setPlaying(true);
+    }, { threshold: 0.55 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!playing) return;
+    const id = window.setInterval(() => {
+      if (dayRef.current >= DAYS) { setPlaying(false); return; }
+      set(dayRef.current + 1);
+    }, 650);
+    return () => window.clearInterval(id);
+  }, [playing]);
+
+  const toggle = () => {
+    started.current = true;
+    if (!playing && dayRef.current >= DAYS) set(1);
+    setPlaying(!playing);
+  };
+
   return (
-    <section className="relative overflow-hidden bg-[#2B3C31] text-[#F1EADC]">
-      <TrialScene dayRef={dayRef} className="absolute inset-x-0 bottom-0 top-auto h-[62%] opacity-90" />
-
-      <div className="relative mx-auto w-full max-w-md px-5 pb-10 pt-12 md:max-w-3xl md:px-8 md:pb-14 md:pt-20 lg:max-w-6xl">
-        <div className="lg:grid lg:grid-cols-[1.15fr_1fr] lg:gap-14">
-          <div>
-            <h1 className="text-balance text-[2.4rem] font-bold leading-[1.08] md:text-[3.2rem] lg:text-[3.6rem]">
-              สิบสี่วันที่บอกได้ว่าบ้านนี้ใช่สำหรับน้องไหม
-            </h1>
-            <p className="mt-6 max-w-[52ch] text-[#C3CFC1] md:text-lg">
-              ทดลองเลี้ยงภายใต้การดูแลของศูนย์ มีคนคอยบอกว่าอะไรปกติ แล้วค่อยตัดสินใจ
-              ถ้าไม่ไหว น้องกลับไปหาบ้านที่เหมาะกว่าได้โดยไม่มีใครผิด
-            </p>
-
-            <div className="mt-9 flex flex-wrap items-center gap-5">
-              <Link
-                href={ctaHref}
-                className="inline-flex min-h-12 items-center rounded-full bg-[#E8B877] px-8 text-lg font-semibold text-[#243227] transition-transform active:scale-[.97]"
-              >
-                {ctaText}
-              </Link>
-              <p className="text-sm text-[#9FB0A0]">ช่วงนำร่อง แมวในกรุงเทพฯ และปริมณฑล</p>
-            </div>
-          </div>
-
+    <section ref={rootRef} className="relative">
+      <div className="mx-auto w-full max-w-md px-5 md:max-w-3xl md:px-8 lg:max-w-6xl">
+        <div className="grid items-center gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-14">
           {/* The photograph answers the scrub. */}
-          <div className="relative mt-10 aspect-[5/4] overflow-hidden rounded-[1.25rem] lg:mt-0">
+          <div className="relative aspect-[5/4] overflow-hidden rounded-[1.5rem] shadow-[0_26px_50px_-24px_var(--c-shadow)]">
             {BEATS.map((b) => (
               <Image
                 key={b.photo}
                 src={b.photo}
-                alt={b.alt}
+                alt={b === beat ? b.alt : ''}
                 fill
                 sizes="(min-width: 1024px) 38vw, 100vw"
-                priority={b === BEATS[0]}
-                className={`object-cover transition-opacity duration-500 ${b === beat ? 'opacity-100' : 'opacity-0'}`}
+                className={`object-cover transition-all duration-700 ${b === beat ? 'scale-100 opacity-100' : 'scale-105 opacity-0'}`}
               />
             ))}
           </div>
+
+          {/* The numeral is the visual anchor, with the day's line under it. */}
+          <div>
+            <p className="flex items-baseline gap-3">
+              <span className="num text-[4.5rem] font-semibold leading-[0.8] text-jade md:text-[6rem]">{day}</span>
+              <span className="pb-1 text-lg text-bark">วันที่</span>
+            </p>
+            <p className="mt-5 min-h-[5.5rem] max-w-[40ch] text-bark md:text-lg">{beat.line}</p>
+            <button type="button" onClick={toggle} className="btn btn-ghost mt-2 border-jade text-jade">
+              {playing ? 'หยุด' : day >= DAYS ? 'เล่นอีกครั้ง' : 'เล่นให้ดู'}
+            </button>
+          </div>
         </div>
 
-        {/* The scrubber. Large numeral as the visual anchor, not a decorative accent. */}
-        <div className="mt-12 md:mt-16">
-          <div className="flex items-end justify-between gap-6">
-            <p className="flex items-baseline gap-3">
-              <span className="num text-[4.5rem] font-semibold leading-[0.8] text-[#E8B877] md:text-[6rem]">{day}</span>
-              <span className="pb-1 text-lg text-[#C3CFC1]">วันที่</span>
-            </p>
-            <p className="max-w-[40ch] pb-2 text-right text-sm text-[#C3CFC1] md:text-base">{beat.line}</p>
-          </div>
+        <div className="mt-8 md:mt-10">
+          {/* Its own row, so no day marker hides behind the photograph. */}
+          <TrialScene dayRef={dayRef} className="h-32 w-full md:h-44" />
 
-          <label className="mt-5 block">
+          <label className="block">
             <span className="sr-only">เลื่อนดูวันที่ 1 ถึง 14 ของการทดลองเลี้ยง</span>
             <input
               type="range"
@@ -116,12 +132,13 @@ export function HeroTrial({ ctaHref, ctaText }: { ctaHref: string; ctaText: stri
               max={DAYS}
               step={1}
               value={day}
-              onChange={(e) => set(Number(e.target.value))}
+              onChange={(e) => { started.current = true; setPlaying(false); set(Number(e.target.value)); }}
               className="day-scrub w-full"
+              style={{ '--p': `${((day - 1) / (DAYS - 1)) * 100}%` } as CSSProperties}
             />
           </label>
 
-          <div className="mt-2 flex justify-between text-xs text-[#8FA091]">
+          <div className="mt-2 flex justify-between text-xs text-bark">
             <span>รับน้องกลับบ้าน</span>
             <span>วันตัดสินใจ</span>
           </div>

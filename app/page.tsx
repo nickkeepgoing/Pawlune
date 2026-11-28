@@ -1,13 +1,15 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
+import type { CSSProperties } from 'react';
 import { Logo } from '@/components/Logo';
 import { DogTuaDaeng } from '@/components/Pets';
 import { CatFace, PawPrint, PeekCat, coatFor } from '@/components/Critters';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { HeroTrial } from '@/components/hero/HeroTrial';
 import { PhoneCheckin } from '@/components/landing/PhoneFrame';
-import { MatchSceneMount } from '@/components/landing/MatchSceneMount';
+import { ToyBox } from '@/components/landing/ToyBox';
+import { CountUp, Parallax, ScrollReveal } from '@/components/landing/Motion';
 import { getState } from '@/lib/data';
 import { matchAnimal, type AnimalLite, type Prefs } from '@/lib/engine';
 import demoTrial from '@/fixtures/demo-trial.json';
@@ -25,6 +27,9 @@ export const metadata: Metadata = {
     type: 'website',
   },
 };
+
+/** Per-element delay or parallax depth, passed to CSS. */
+const vars = (v: Record<`--${string}`, string | number>) => v as CSSProperties;
 
 /** One reading column, shared by every band so full-bleed backgrounds can alternate. */
 const WRAP = 'mx-auto w-full max-w-md px-5 md:max-w-3xl md:px-8 lg:max-w-6xl';
@@ -100,16 +105,14 @@ export default async function Landing() {
       <div className="flex items-center gap-4">
         <CatFace coat={coatFor(cat.name, 'cat')} className="h-16 w-16 shrink-0" />
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-2">
-            <p className="text-xl font-bold">{cat.name}</p>
-            <p className="text-xs text-bark">ตัวอย่างจากข้อมูลจำลอง</p>
-          </div>
+          <p className="text-xl font-bold">{cat.name}</p>
           <p className="text-sm text-bark">แมวโต ตรวจ FIV/FeLV แล้ว ขี้อ้อน</p>
+          <p className="text-xs text-bark">ตัวอย่างจากข้อมูลจำลอง</p>
         </div>
       </div>
       <ul className="mt-4 space-y-1.5 text-sm">
         {m.fits.map((f) => (
-          <li key={f} className="flex items-start gap-2"><PawPrint className="mt-1 h-3.5 w-3.5 shrink-0 text-jade" />{f}</li>
+          <li key={f} data-reveal style={vars({ '--d': `${m.fits.indexOf(f) * 180}ms` })} className="flex items-start gap-2"><PawPrint className="mt-1 h-3.5 w-3.5 shrink-0 text-jade" />{f}</li>
         ))}
         {m.cautions.map((c) => (
           <li key={c} className="flex items-start gap-2 text-bark">
@@ -125,6 +128,7 @@ export default async function Landing() {
 
   return (
     <main className="overflow-x-clip">
+      <ScrollReveal />
       <a href="#content" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-jade focus:px-4 focus:py-2 focus:text-cream">
         ข้ามไปเนื้อหาหลัก
       </a>
@@ -181,18 +185,38 @@ export default async function Landing() {
               </ul>
             </div>
 
-            {/* Photograph, match result and phone, stacked at three depths. */}
-            <div className="relative mx-auto w-full max-w-[26rem] lg:max-w-none">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] shadow-[0_26px_50px_-22px_var(--c-shadow)] ring-1 ring-bark/10">
-                <Image src="/photos/settled.jpg" alt="ลูกแมวนอนสบายบนโซฟาในบ้านที่ปรับตัวได้แล้ว" fill priority sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
+            {/* Layers at three depths. Nothing is laid over the cat. */}
+            <Parallax className="relative mx-auto w-full max-w-[26rem] lg:max-w-none">
+              <div className="depth" style={vars({ '--depth': -6 })}>
+                <div className="relative aspect-[3/2] overflow-hidden rounded-[1.5rem] shadow-[0_30px_55px_-22px_var(--c-shadow)] ring-1 ring-bark/10">
+                  <Image src="/photos/settled.jpg" alt="ลูกแมวนอนสบายบนโซฟาในบ้านที่ปรับตัวได้แล้ว" fill priority sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
+                </div>
               </div>
 
-              <div className="relative z-10 mx-auto -mt-20 w-[94%] lg:-ml-10 lg:w-[88%]">{matchCard}</div>
-
-              <div className="pointer-events-none absolute right-0 top-2 z-20 hidden origin-top-right scale-[.58] xl:block">
-                <PhoneCheckin />
+              <div aria-hidden className="depth absolute -right-3 -top-4" style={vars({ '--depth': 16 })}>
+                <p className="float rounded-full bg-paper px-4 py-2 text-sm font-semibold text-jade shadow-[0_14px_28px_-12px_var(--c-shadow)]">ทดลองเลี้ยง 14 วัน</p>
               </div>
-            </div>
+
+              <div className="depth relative z-10 mt-4 lg:-ml-8" style={vars({ '--depth': 10 })}>
+                <div className="rise-in card bg-paper text-cocoa shadow-[0_24px_44px_-24px_var(--c-shadow)]" style={vars({ '--d': '250ms' })}>
+                  <div className="flex items-center gap-3">
+                    <CatFace coat={coatFor(cat.name, 'cat')} className="h-12 w-12 shrink-0" />
+                    <div className="min-w-0">
+                      <p className="font-bold">{cat.name} เข้ากับบ้านนี้ตรงไหน</p>
+                      <p className="text-xs text-bark">ตัวอย่างจากข้อมูลจำลอง</p>
+                    </div>
+                  </div>
+                  <ul className="mt-3 space-y-1 text-sm">
+                    {m.fits.slice(0, 2).map((f, i) => (
+                      <li key={f} className="rise-in flex items-start gap-2" style={vars({ '--d': `${600 + i * 250}ms` })}>
+                        <PawPrint className="mt-1 h-3.5 w-3.5 shrink-0 text-jade" />{f}
+                      </li>
+                    ))}
+                  </ul>
+                  <a href="#matching" className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-jade underline underline-offset-4">ดูเหตุผลทั้งหมดและข้อควรระวัง</a>
+                </div>
+              </div>
+            </Parallax>
           </div>
         </div>
       </section>
@@ -208,8 +232,8 @@ export default async function Landing() {
 
           <ul className="mt-10 grid gap-6 md:grid-cols-3">
             {PROBLEMS.map((p) => (
-              <li key={p.n} className="flex flex-col">
-                <div className="relative aspect-[5/4] overflow-hidden rounded-[var(--radius-card)]">
+              <li key={p.n} data-reveal style={vars({ '--d': `${(Number(p.n) - 1) * 140}ms` })} className="flex flex-col">
+                <div className="zoom-photo relative aspect-[5/4] overflow-hidden rounded-[var(--radius-card)] shadow-[0_22px_40px_-24px_var(--c-shadow)]">
                   <Image src={p.photo} alt={p.alt} fill sizes="(min-width: 768px) 30vw, 100vw" className="object-cover" />
                 </div>
                 <p className="num mt-4 text-sm font-semibold text-honey">{p.n}</p>
@@ -220,7 +244,7 @@ export default async function Landing() {
           </ul>
 
           <div className="mt-12 grid gap-6 overflow-hidden rounded-[var(--radius-sheet)] bg-jade p-6 text-cream md:grid-cols-[auto_1fr] md:items-center md:p-9">
-            <p className="num text-6xl font-semibold leading-none md:text-8xl">64%</p>
+            <CountUp value={64} suffix="%" className="num text-6xl font-semibold leading-none md:text-8xl" />
             <div>
               <p className="text-lg font-semibold md:text-xl">ของการคืนสุนัขที่รับเลี้ยง เกิดใน 14 วันแรก</p>
               <p className="mt-2 text-sm opacity-95">
@@ -243,10 +267,10 @@ export default async function Landing() {
 
         <ol className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {STAGES.map(([n, title, body], i) => (
-            <li key={n} className="relative">
+            <li key={n} data-reveal style={vars({ '--d': `${i * 220}ms` })} className="relative">
               {/* The connector only means something where the stages sit in a row. */}
-              {i < STAGES.length - 1 && <span aria-hidden className="absolute left-12 right-0 top-5 hidden h-[2px] bg-bark/15 lg:block" />}
-              <span className="num relative grid h-10 w-10 place-items-center rounded-full bg-jade text-sm font-bold text-cream">{n}</span>
+              {i < STAGES.length - 1 && <span aria-hidden className="stage-line absolute left-12 right-0 top-5 hidden h-[3px] bg-jade/45 lg:block" />}
+              <span className="num relative grid h-10 w-10 place-items-center rounded-full bg-jade text-sm font-bold text-cream shadow-[0_10px_18px_-8px_var(--c-shadow)]">{n}</span>
               <h3 className="mt-4 text-lg font-bold">{title}</h3>
               <p className="mt-1 text-sm text-bark">{body}</p>
             </li>
@@ -259,12 +283,12 @@ export default async function Landing() {
         <div className={WRAP}>
           <h2 className="text-2xl font-bold md:text-4xl">ลองเล่นดูว่า 14 วันเป็นยังไง</h2>
           <p className="mt-3 max-w-[58ch] text-bark">
-            ลากดูได้เลย รูป ข้อความ และแสงจะเปลี่ยนตามวันที่คุณเลือก ทั้งหมดนี้คือหน้าจอที่มีอยู่จริงในแอป ไม่ใช่ภาพจำลองของสิ่งที่ยังไม่ได้ทำ
+            ลากดูตัวอย่างว่าสองสัปดาห์แรกอาจเป็นยังไง ส่วนที่ลากได้นี้ทำไว้เล่าเรื่องบนหน้านี้ ส่วนหน้าจอที่ใช้จริงในแอปสรุปไว้ด้านล่าง
           </p>
         </div>
 
         <div className="mt-10">
-          <HeroTrial ctaHref={cta.href} ctaText={cta.text} />
+          <HeroTrial />
         </div>
 
         <div className={`${WRAP} mt-10`}>
@@ -279,14 +303,8 @@ export default async function Landing() {
         </div>
       </div>
 
-      {/* ---- 5. How matching works ----
-          Two rings of shapes turning around one centre, behind the explanation of
-          what the rules weigh: the household and the animals, drifting until a pair
-          lines up. */}
-      <section id="matching" className="relative scroll-mt-20 overflow-hidden py-16 md:py-20">
-        <MatchSceneMount className="absolute inset-x-0 top-0 -z-10 h-full opacity-70" />
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-cream via-cream/60 to-cream" />
-
+      {/* ---- 5. How matching works ---- */}
+      <section id="matching" className="scroll-mt-20 py-16 md:py-20">
         <div className={`${WRAP} grid gap-10 lg:grid-cols-2 lg:items-start`}>
           <div>
             <h2 className="text-2xl font-bold md:text-4xl">ความเข้ากันไม่ใช่แค่ตัวเลข</h2>
@@ -296,7 +314,7 @@ export default async function Landing() {
             </p>
             <ul className="mt-6 space-y-2">
               {RULES.map((r) => (
-                <li key={r} className="flex items-start gap-2.5"><PawPrint className="mt-1 h-4 w-4 shrink-0 text-jade" />{r}</li>
+                <li key={r} data-reveal style={vars({ '--d': `${RULES.indexOf(r) * 110}ms` })} className="flex items-start gap-2.5"><PawPrint className="mt-1 h-4 w-4 shrink-0 text-jade" />{r}</li>
               ))}
             </ul>
             <p className="mt-6 text-sm text-bark">
@@ -313,27 +331,34 @@ export default async function Landing() {
         </div>
       </section>
 
+      {/* ---- Toy shelf: playing is one of the things a day's check-in records. ---- */}
+      <section className={`${WRAP} pb-16 md:pb-20`}>
+        <h2 className="text-2xl font-bold md:text-3xl">ของเล่นของน้อง</h2>
+        <p className="mb-6 mt-2 max-w-[52ch] text-bark">การเล่นกับน้องเป็นหนึ่งในกิจกรรมที่คุณบันทึกได้ทุกวัน แตะของเล่นดูได้เลย</p>
+        <ToyBox />
+      </section>
+
       {/* ---- Mid-page band: the daily screen, at the size you would actually hold it. ---- */}
       <div className={`${WRAP} pb-16 md:pb-20`}>
-        <div className="relative overflow-hidden rounded-[2rem] bg-jade px-6 py-12 text-cream md:px-12 md:py-14">
-          <div aria-hidden className="pointer-events-none absolute -left-20 -top-24 h-80 w-80 rounded-full bg-cream/10 blur-3xl" />
+        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-sage/55 via-sage/25 to-paper px-6 py-12 text-cocoa ring-1 ring-inset ring-bark/10 md:px-12 md:py-14">
+          <div aria-hidden className="pointer-events-none absolute -left-20 -top-24 h-80 w-80 rounded-full bg-honey/30 blur-3xl" />
           <div className="relative grid items-center gap-10 md:grid-cols-[1fr_auto]">
             <div>
               <h2 className="text-2xl font-bold md:text-3xl">สิบวินาทีต่อวัน คือทั้งหมดที่ขอ</h2>
-              <p className="mt-3 max-w-[46ch] opacity-95">
+              <p className="mt-3 max-w-[46ch] text-bark">
                 เลือกอารมณ์ แตะกิจกรรมที่ทำกับน้อง แล้วกดบันทึก ภาระที่เจอก็บันทึกได้
                 เพราะวันที่เหนื่อยเป็นส่วนหนึ่งของการเลี้ยงเหมือนกัน
               </p>
-              <ul className="mt-6 space-y-2 text-sm opacity-95">
-                <li className="flex items-start gap-2.5"><PawPrint className="mt-1 h-4 w-4 shrink-0" />บันทึกย้อนหลังได้ ไม่ต้องกลัวลืมวันเดียวแล้วเสียสถิติ</li>
-                <li className="flex items-start gap-2.5"><PawPrint className="mt-1 h-4 w-4 shrink-0" />โน้ตที่พิมพ์ไม่เคยถูกส่งออกไปไหน และไม่ถูกส่งให้ AI</li>
-                <li className="flex items-start gap-2.5"><PawPrint className="mt-1 h-4 w-4 shrink-0" />ครบเจ็ดวันถึงจะเริ่มเห็นรูปแบบ เราไม่เดาจากสองสามวัน</li>
+              <ul className="mt-6 space-y-2 text-sm text-bark">
+                <li className="flex items-start gap-2.5"><PawPrint className="mt-1 h-4 w-4 shrink-0" />กดผิดก็แก้บันทึกของวันนี้ได้</li>
+                <li className="flex items-start gap-2.5"><PawPrint className="mt-1 h-4 w-4 shrink-0" />โน้ตที่พิมพ์เห็นได้คุณคนเดียว และไม่ถูกส่งให้ AI</li>
+                <li className="flex items-start gap-2.5"><PawPrint className="mt-1 h-4 w-4 shrink-0" />ต้องมีวันที่ทำและวันที่ไม่ได้ทำอย่างน้อยฝั่งละเจ็ดวันจึงจะเปรียบเทียบ</li>
               </ul>
-              <Link href={cta.href} className="btn mt-8 bg-cream px-7 text-jade">{cta.text}</Link>
+              <Link href={cta.href} className="btn btn-primary mt-8 px-7">{cta.text}</Link>
             </div>
 
-            <div className="mx-auto md:mx-0">
-              <PhoneCheckin className="rotate-[-3deg]" />
+            <div data-reveal className="mx-auto md:mx-0">
+              <div className="float"><PhoneCheckin className="rotate-[-3deg]" /></div>
             </div>
           </div>
         </div>
@@ -356,7 +381,7 @@ export default async function Landing() {
                 {[
                   'การจับคู่น้องกับบ้านคุณ ใช้กฎที่เปิดให้ดู ไม่ใช่ AI',
                   'การคิดเลขทุกชนิด มาจากเครื่องคำนวณของแอปเท่านั้น',
-                  'บันทึกที่คุณพิมพ์ ไม่เคยถูกส่งออกไปไหน',
+                  'บันทึกที่คุณพิมพ์ ไม่ถูกส่งให้ AI',
                   'ปุ่มขอความช่วยเหลือ ไม่มี AI อยู่ในนั้นเลย',
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-2.5"><PawPrint className="mt-1 h-4 w-4 shrink-0 text-jade" />{t}</li>
@@ -365,7 +390,7 @@ export default async function Landing() {
             </div>
 
             {/* A picture of the card as it would appear, stacked over a quiet second card. */}
-            <div className="relative mx-auto w-full max-w-[26rem]">
+            <div data-reveal className="relative mx-auto w-full max-w-[26rem]">
               <div aria-hidden className="absolute inset-x-6 -bottom-4 h-24 rounded-[var(--radius-card)] bg-paper/70 ring-1 ring-bark/10" />
               <div className="card relative bg-paper shadow-[0_22px_45px_-26px_var(--c-shadow)]">
                 <div className="flex items-start justify-between gap-3">

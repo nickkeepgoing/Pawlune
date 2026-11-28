@@ -199,21 +199,24 @@ body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-co
    Styled on both engines; the thumb is a 44px target even though it looks small. */
 .day-scrub { -webkit-appearance: none; appearance: none; background: transparent; height: 44px; cursor: grab; }
 .day-scrub:active { cursor: grabbing; }
-.day-scrub::-webkit-slider-runnable-track { height: 3px; border-radius: 999px; background: #46594B; }
-.day-scrub::-moz-range-track { height: 3px; border-radius: 999px; background: #46594B; }
-.day-scrub::-moz-range-progress { height: 3px; border-radius: 999px; background: #E8B877; }
+.day-scrub::-webkit-slider-runnable-track {
+  height: 6px; border-radius: 999px;
+  background: linear-gradient(to right, var(--color-jade) var(--p, 0%), color-mix(in srgb, var(--color-bark) 18%, transparent) var(--p, 0%));
+}
+.day-scrub::-moz-range-track { height: 6px; border-radius: 999px; background: color-mix(in srgb, var(--color-bark) 18%, transparent); }
+.day-scrub::-moz-range-progress { height: 6px; border-radius: 999px; background: var(--color-jade); }
 .day-scrub::-webkit-slider-thumb {
-  -webkit-appearance: none; appearance: none; margin-top: -10px;
-  width: 23px; height: 23px; border-radius: 999px; background: #E8B877;
-  border: 5px solid #2B3C31; box-shadow: 0 0 0 1.5px #E8B877;
+  -webkit-appearance: none; appearance: none; margin-top: -9px;
+  width: 24px; height: 24px; border-radius: 999px; background: var(--color-jade);
+  border: 5px solid var(--color-paper); box-shadow: 0 0 0 1.5px var(--color-jade), 0 4px 10px -3px var(--c-shadow);
 }
 .day-scrub::-moz-range-thumb {
-  width: 23px; height: 23px; border-radius: 999px; background: #E8B877;
-  border: 5px solid #2B3C31; box-shadow: 0 0 0 1.5px #E8B877;
+  width: 24px; height: 24px; border-radius: 999px; background: var(--color-jade);
+  border: 5px solid var(--color-paper); box-shadow: 0 0 0 1.5px var(--color-jade);
 }
 .day-scrub:focus-visible { outline: none; }
-.day-scrub:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 1.5px #E8B877, 0 0 0 5px rgba(232,184,119,.45); }
-.day-scrub:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 1.5px #E8B877, 0 0 0 5px rgba(232,184,119,.45); }
+.day-scrub:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 1.5px var(--color-jade), 0 0 0 6px color-mix(in srgb, var(--color-jade) 35%, transparent); }
+.day-scrub:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 1.5px var(--color-jade), 0 0 0 6px color-mix(in srgb, var(--color-jade) 35%, transparent); }
 
 /* =============================================================================
    Shared surfaces — the layer every screen is built from.
@@ -273,3 +276,30 @@ body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-co
 /* 2. The ruled-paper lines ran straight through the text sitting on them.
       Paper surfaces stay, the rules go. */
 .page { background-image: none; }
+
+/* ---- Landing motion ---------------------------------------------------------
+   .reveal-ready is only ever added by script, so nothing is hidden without it. */
+.reveal-ready { opacity: 0; transform: translateY(26px) scale(.98); }
+.reveal-ready.reveal-in {
+  opacity: 1; transform: none;
+  transition: opacity .6s ease, transform .7s cubic-bezier(.2,.9,.3,1.2);
+  transition-delay: var(--d, 0ms);
+}
+/* The line between two stages draws itself after its stage arrives. */
+.stage-line { transform-origin: left; }
+.reveal-ready .stage-line { transform: scaleX(0); }
+.reveal-ready.reveal-in .stage-line { transform: scaleX(1); transition: transform .5s ease; transition-delay: calc(var(--d, 0ms) + 300ms); }
+
+/* Stacked layers that shift by different amounts under the pointer. */
+.depth {
+  transform: translate3d(calc(var(--px, 0) * var(--depth, 0) * 1px), calc(var(--py, 0) * var(--depth, 0) * 1px), 0);
+  transition: transform .35s ease-out;
+}
+@keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-9px) } }
+.float { animation: float 5s ease-in-out infinite; }
+@keyframes rise-in { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
+.rise-in { animation: rise-in .6s ease-out both; animation-delay: var(--d, 0ms); }
+.zoom-photo img { transition: transform .6s ease; }
+.zoom-photo:hover img { transform: scale(1.07); }
+
+@media print { .reveal-ready { opacity: 1; transform: none; } }
