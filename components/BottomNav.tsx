@@ -24,7 +24,10 @@ function isActive(path: string, href: string) { return path === href || path.sta
 export function TopNav() {
   const path = usePathname();
   return (
-    <nav className="no-print hidden flex-1 lg:block" aria-label="เมนูหลัก">
+    /* Takes over from the bottom bar at 768px: a bar pinned to the bottom of a
+       desktop window reads as a phone app stuck in a browser. Labels appear once
+       there is room for them. */
+    <nav className="no-print hidden flex-1 md:block" aria-label="เมนูหลัก">
       <ul className="flex items-center justify-center gap-1">
         {ITEMS.map(({ href, label, Icon, ...rest }) => {
           const active = isActive(path, href);
@@ -36,12 +39,14 @@ export function TopNav() {
                 aria-current={active ? 'page' : undefined}
                 className={
                   primary
-                    ? 'mx-2 flex min-h-11 items-center gap-1.5 rounded-full bg-jade px-5 text-sm font-semibold text-cream'
+                    ? 'mx-2 flex min-h-11 items-center gap-1.5 rounded-full bg-jade px-4 text-sm font-semibold text-cream lg:px-5'
                     : `flex min-h-11 items-center gap-1.5 rounded-full px-3.5 text-sm ${active ? 'font-semibold text-jade' : 'text-bark hover:text-cocoa'}`
                 }
               >
                 <Icon className="h-5 w-5" />
-                {label}
+                {/* Tablet widths have room for the icons but not five Thai labels. */}
+                <span className={primary ? undefined : 'hidden lg:inline'}>{label}</span>
+                <span className="sr-only lg:hidden">{label}</span>
                 {active && !primary && <span className="ml-0.5 h-1.5 w-1.5 rounded-full bg-honey" aria-hidden />}
               </Link>
             </li>
@@ -56,7 +61,7 @@ export function BottomNav() {
   const path = usePathname();
   return (
     <nav
-      className="no-print fixed inset-x-0 bottom-0 z-20 border-t border-bark/15 bg-paper/95 backdrop-blur lg:hidden"
+      className="no-print fixed inset-x-0 bottom-0 z-20 border-t border-bark/15 bg-paper/95 backdrop-blur md:hidden"
       aria-label="เมนูหลัก"
     >
       <ul className="mx-auto grid max-w-2xl grid-cols-5 items-end">

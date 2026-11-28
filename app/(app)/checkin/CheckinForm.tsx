@@ -125,7 +125,7 @@ export function CheckinForm({ petName, species, photoUrl, dateLabel, initial, la
       {error && <p className="font-semibold" role="alert">{error}</p>}
 
       {/* Stays within thumb reach on a phone however long the chip list runs. */}
-      <div className="sticky bottom-20 z-10 -mx-5 bg-gradient-to-t from-cream via-cream to-transparent px-5 pb-1 pt-4 lg:static lg:mx-0 lg:bg-none lg:p-0">
+      <div className="sticky bottom-20 z-10 -mx-5 bg-gradient-to-t from-cream via-cream to-transparent px-5 pb-1 pt-4 md:static md:mx-0 md:bg-none md:p-0">
         <button type="button" onClick={save} disabled={state === 'saving'} className="btn btn-primary w-full text-lg">{state === 'saving' ? 'กำลังบันทึก…' : 'บันทึก'}</button>
       </div>
     </section>

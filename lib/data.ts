@@ -89,7 +89,24 @@ export async function signedPhotoUrl(path: string | null): Promise<string | null
 }
 
 /** Avatar for the header/profile: signed URL of the uploaded photo, else an animal (chosen or stable default). */
+/**
+ * Which picture to show for a person, in order of how deliberately they chose it:
+ * a photo they uploaded, then an animal they picked, then the picture that came
+ * with their Google account, then a default animal derived from their id.
+ *
+ * `fromProvider` lets the profile screen say where the picture came from, so a
+ * Google photo appearing without the person ever uploading one is explained.
+ */
 export async function avatarFor(profile: Profile | null, uid: string) {
-  const animal: Animal = (ANIMALS as readonly string[]).includes(profile?.avatar_animal ?? '') ? (profile!.avatar_animal as Animal) : defaultAnimal(uid);
-  return { url: await signedPhotoUrl(profile?.avatar_path ?? null), animal };
+  const picked = (ANIMALS as readonly string[]).includes(profile?.avatar_animal ?? '');
+  const animal: Animal = picked ? (profile!.avatar_animal as Animal) : defaultAnimal(uid);
+
+  const uploaded = await signedPhotoUrl(profile?.avatar_path ?? null);
+  if (uploaded) return { url: uploaded, animal, fromProvider: false };
+  if (picked) return { url: null, animal, fromProvider: false };
+
+  const { user } = await getState();
+  const meta = user?.user_metadata as { avatar_url?: unknown; picture?: unknown } | undefined;
+  const fromGoogle = [meta?.avatar_url, meta?.picture].find((v): v is string => typeof v === 'string' && v.startsWith('https://')) ?? null;
+  return { url: fromGoogle, animal, fromProvider: Boolean(fromGoogle) };
 }

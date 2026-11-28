@@ -7,7 +7,7 @@ export default async function ProfilePage() {
   const av = await avatarFor(profile, user!.id);
   const google = user!.app_metadata?.provider === 'google';
   return (
-    <ProfileForm uid={user!.id} avatarUrl={av.url} animal={av.animal} hasPhoto={Boolean(profile?.avatar_path)}
+    <ProfileForm uid={user!.id} avatarUrl={av.url} animal={av.animal} hasPhoto={Boolean(profile?.avatar_path)} fromProvider={av.fromProvider}
       displayName={profile?.display_name ?? ''} username={profile?.username ?? ''} email={user!.email ?? ''} google={google} />
   );
 }

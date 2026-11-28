@@ -35,26 +35,29 @@ export default async function PetsPage({ searchParams }: { searchParams: Promise
         <ul className="mt-3 grid gap-3 md:grid-cols-2">
           {((past ?? []) as Pet[]).map((p) => (
             <li key={p.id} className="card card-quiet">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <p className="font-semibold">{p.name} <span className="font-normal text-bark">{SPECIES_TH[p.species]}{p.past_period && ` ${p.past_period}`}</span></p>
-                  {p.past_feeling && <p className="text-sm">ความรู้สึกเมื่อนึกถึง <span className="num">{p.past_feeling}</span>/5</p>}
-                  {p.past_tags.length > 0 && <p className="mt-1 flex flex-wrap gap-1">{p.past_tags.map((t) => <span key={t} className="rounded-full bg-cream px-2 py-0.5 text-xs">{t}</span>)}</p>}
-                  {p.memory_note && <p className="mt-2 text-bark">{p.memory_note}</p>}
-                </div>
-                {sp.confirm === p.id ? (
-                  <form action={deleteMemory} className="shrink-0 text-right">
-                    <input type="hidden" name="id" value={p.id} />
-                    <p className="text-sm font-semibold">ลบแล้วกู้คืนไม่ได้</p>
-                    <div className="mt-1 flex gap-2">
-                      <button className="btn btn-ghost min-h-11 px-3 text-sm">ลบเลย</button>
-                      <Link href="/pets" className="btn btn-quiet min-h-11 px-3 text-sm">เก็บไว้</Link>
-                    </div>
-                  </form>
-                ) : (
-                  <Link href={`/pets?confirm=${p.id}`} className="btn btn-quiet min-h-11 shrink-0 px-3 text-sm" aria-label={`ลบความทรงจำของ${p.name}`}>ลบ</Link>
-                )}
+              <div>
+                <p className="font-semibold">{p.name} <span className="font-normal text-bark">{SPECIES_TH[p.species]}{p.past_period && ` ${p.past_period}`}</span></p>
+                {p.past_feeling && <p className="text-sm">ความรู้สึกเมื่อนึกถึง <span className="num">{p.past_feeling}</span>/5</p>}
+                {p.past_tags.length > 0 && <p className="mt-1 flex flex-wrap gap-1">{p.past_tags.map((t) => <span key={t} className="rounded-full bg-cream px-2 py-0.5 text-xs">{t}</span>)}</p>}
+                {p.memory_note && <p className="mt-2 text-bark">{p.memory_note}</p>}
               </div>
+
+              {/* The question gets its own row under the memory. Squeezed into the corner
+                  beside the text it crushed both, on the one card where being clear matters. */}
+              {sp.confirm === p.id ? (
+                <form action={deleteMemory} className="mt-4 border-t border-bark/15 pt-3">
+                  <input type="hidden" name="id" value={p.id} />
+                  <p className="text-sm font-semibold">ลบความทรงจำของ{p.name}ใช่ไหม ลบแล้วกู้คืนไม่ได้</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button className="btn btn-ghost min-h-11 px-4 text-sm">ลบเลย</button>
+                    <Link href="/pets" className="btn btn-quiet min-h-11 px-4 text-sm">เก็บไว้</Link>
+                  </div>
+                </form>
+              ) : (
+                <div className="mt-3 flex justify-end">
+                  <Link href={`/pets?confirm=${p.id}`} className="btn btn-quiet min-h-11 px-3 text-sm" aria-label={`ลบความทรงจำของ${p.name}`}>ลบ</Link>
+                </div>
+              )}
             </li>
           ))}
         </ul>

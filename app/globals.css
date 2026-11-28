@@ -199,17 +199,17 @@ body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-co
    Styled on both engines; the thumb is a 44px target even though it looks small. */
 .day-scrub { -webkit-appearance: none; appearance: none; background: transparent; height: 44px; cursor: grab; }
 .day-scrub:active { cursor: grabbing; }
-.day-scrub::-webkit-slider-runnable-track { height: 3px; border-radius: 999px; background: #4A4038; }
-.day-scrub::-moz-range-track { height: 3px; border-radius: 999px; background: #4A4038; }
+.day-scrub::-webkit-slider-runnable-track { height: 3px; border-radius: 999px; background: #46594B; }
+.day-scrub::-moz-range-track { height: 3px; border-radius: 999px; background: #46594B; }
 .day-scrub::-moz-range-progress { height: 3px; border-radius: 999px; background: #E8B877; }
 .day-scrub::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none; margin-top: -10px;
   width: 23px; height: 23px; border-radius: 999px; background: #E8B877;
-  border: 5px solid #2A211B; box-shadow: 0 0 0 1.5px #E8B877;
+  border: 5px solid #2B3C31; box-shadow: 0 0 0 1.5px #E8B877;
 }
 .day-scrub::-moz-range-thumb {
   width: 23px; height: 23px; border-radius: 999px; background: #E8B877;
-  border: 5px solid #2A211B; box-shadow: 0 0 0 1.5px #E8B877;
+  border: 5px solid #2B3C31; box-shadow: 0 0 0 1.5px #E8B877;
 }
 .day-scrub:focus-visible { outline: none; }
 .day-scrub:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 1.5px #E8B877, 0 0 0 5px rgba(232,184,119,.45); }
@@ -256,3 +256,20 @@ body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-co
 /* Section heading: the rule sits under the words and stops where they stop,
    so it measures the heading rather than decorating the full width. */
 .heading-rule { display: inline-block; padding-bottom: .4rem; border-bottom: 2px solid var(--color-honey); }
+
+/* ---- Corrections -----------------------------------------------------------
+   1. A <legend> sits inside the fieldset's border by default, so on a card it
+      straddles the top edge: the border cuts through the words and long Thai
+      headings spill past the corner. Floating it takes it out of that slot and
+      lets it behave like an ordinary block at the top of the card. */
+.card > legend {
+  float: left;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.card > legend + * { clear: both; }
+
+/* 2. The ruled-paper lines ran straight through the text sitting on them.
+      Paper surfaces stay, the rules go. */
+.page { background-image: none; }

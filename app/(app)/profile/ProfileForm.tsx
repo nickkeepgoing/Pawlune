@@ -8,9 +8,9 @@ import { resizeImage } from '@/lib/image';
 import { USERNAME_HINT } from '@/lib/username';
 import { saveProfile, setAvatarAnimal, setAvatarPhoto, type ProfileState } from './actions';
 
-type Props = { uid: string; avatarUrl: string | null; animal: Animal; hasPhoto: boolean; displayName: string; username: string; email: string; google: boolean };
+type Props = { uid: string; avatarUrl: string | null; animal: Animal; hasPhoto: boolean; fromProvider: boolean; displayName: string; username: string; email: string; google: boolean };
 
-export function ProfileForm({ uid, avatarUrl, animal, hasPhoto, displayName, username, email, google }: Props) {
+export function ProfileForm({ uid, avatarUrl, animal, hasPhoto, fromProvider, displayName, username, email, google }: Props) {
   const router = useRouter();
   const [state, action] = useActionState<ProfileState, FormData>(saveProfile, {});
   const [busy, setBusy] = useState(false);
@@ -36,13 +36,14 @@ export function ProfileForm({ uid, avatarUrl, animal, hasPhoto, displayName, use
     <div className="space-y-6 py-2">
       <h1 className="text-2xl font-bold">โปรไฟล์ของฉัน</h1>
 
-      <section className="page flex flex-col items-center rounded-[var(--radius-sheet)] border border-bark/20 p-6 text-center">
+      <section className="card flex flex-col items-center p-6 text-center">
         <Avatar url={avatarUrl} animal={animal} className="h-28 w-28" />
         <p className="mt-3 text-lg font-bold">{displayName || username || 'ไม่มีชื่อ'}</p>
         {username && <p className="text-sm text-bark">@{username}</p>}
         <input ref={input} type="file" accept="image/*" className="sr-only" aria-label="เลือกรูปโปรไฟล์" onChange={(e) => upload(e.target.files?.[0])} />
         <button onClick={() => input.current?.click()} disabled={busy} className="btn btn-primary mt-4">{busy ? 'กำลังอัปโหลด…' : hasPhoto ? 'เปลี่ยนรูปโปรไฟล์' : 'ใส่รูปโปรไฟล์'}</button>
         {err && <p className="mt-2 text-sm font-semibold" role="alert">{err}</p>}
+        {fromProvider && <p className="mt-2 text-sm text-bark">ตอนนี้ใช้รูปจากบัญชี Google ของคุณอยู่ อัปโหลดรูปใหม่หรือเลือกรูปสัตว์ด้านล่างเพื่อเปลี่ยนได้</p>}
         <p className="mt-2 text-xs text-bark">รูปโปรไฟล์เห็นได้คนเดียว</p>
       </section>
 

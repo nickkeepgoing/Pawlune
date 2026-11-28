@@ -15,7 +15,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const ready = (await currentStage()) === 'ready';
   const av = await avatarFor(profile, user.id);
   return (
-    <div className="min-h-dvh pb-24 lg:pb-12">
+    <div className="min-h-dvh pb-24 md:pb-12">
       {profile?.is_demo && (
         <div className="no-print sticky top-0 z-30 bg-honey px-4 py-1.5 text-center text-sm font-semibold text-cocoa" role="status">ข้อมูลจำลอง — บัญชีสำหรับสาธิต ไม่ใช่ข้อมูลผู้ใช้จริง</div>
       )}
