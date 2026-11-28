@@ -93,11 +93,6 @@ export function PrefsForm({ prefs }: { prefs: PrefsRow | null }) {
   return (
     <div className="wide py-3 text-lg">
       <PrefsShell action={savePrefs} aside={aside}>
-        <p className="rounded-2xl bg-honey/20 px-5 py-4 text-base">
-          เราจับคู่ด้วยกฎที่เปิดให้ดูทุกข้อ (ไม่ใช่ AI) ข้อเรื่องความปลอดภัย เช่น อาการแพ้ หรือสัตว์เดิมที่ไม่เข้ากัน จะตัดตัวที่ไม่เหมาะออกให้เลย
-          ช่วงนำร่องเริ่มที่แมวในกรุงเทพฯ และปริมณฑล ยังเลือกหมาได้
-        </p>
-
         <Part n={1} note="ใช้ตัดตัวที่ไม่ปลอดภัยออกให้">
           <Choices name="species" question="อยากได้สัตว์อะไร" type="checkbox" checked={p?.species ?? ['cat']}
             opts={[['cat', 'แมว', <CatFace key="c" coat={coatFor('มะขาม', 'cat')} className="h-14 w-14 shrink-0" />], ['dog', 'หมา', <DogFace key="d" coat={coatFor('ถั่วแดง', 'dog')} className="h-14 w-14 shrink-0" />]]} />

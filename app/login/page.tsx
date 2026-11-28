@@ -25,7 +25,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <Link href="/" className="flex items-center lg:hidden"><Logo className="text-lg" /></Link>
         <h1 className="mt-8 text-2xl font-bold lg:mt-0">เข้าสู่ระบบ</h1>
         <p className="mt-1 text-bark">เริ่มสมุดบันทึกของคุณกับน้อง</p>
-        {sp.error === 'reset' && <p className="mt-4 rounded-lg bg-paper px-3 py-2 text-sm" role="alert">ลิงก์ตั้งรหัสผ่านหมดอายุหรือใช้ไปแล้ว กดลืมรหัสผ่านเพื่อขอลิงก์ใหม่</p>}
+        {sp.error === 'reset' && <p className="mt-4 rounded-lg bg-paper px-3 py-2 text-sm" role="alert">ลิงก์ตั้งรหัสผ่านใช้ไม่ได้ อาจหมดอายุ ใช้ไปแล้ว หรือเปิดคนละเบราว์เซอร์กับที่ขอ กดลืมรหัสผ่านเพื่อขอลิงก์ใหม่</p>}
         <LoginForm googleError={sp.error === 'google'} />
       </div>
     </main>

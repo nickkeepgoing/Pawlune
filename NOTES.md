@@ -40,6 +40,14 @@ Supabase is in ap-northeast-2 (Seoul), so `vercel.json` pins server functions to
 - Look taken from the team's design zip (gradient page, glass cards, looped Thai font, aurora dark theme). Only the
   design: that zip runs on MySQL with its own sign-in, which the fixed stack here does not allow.
 
+## Password reset email (setup lives in the Supabase dashboard)
+- Supabase's built-in email only delivers to the project team's own addresses. Real users need custom SMTP
+  (Authentication > Emails > SMTP Settings).
+- Authentication > URL Configuration: Site URL = the live address; Redirect URLs include `<live>/**` and
+  `http://localhost:3000/**`.
+- Authentication > Emails > Reset password: paste `supabase/templates/recovery.html`. Its link works on any device.
+  With the default template the link only works in the browser that asked for it.
+
 ## Help button
 "ต้องการคนรับฟัง" is a floating button on every signed-in screen (CLAUDE.md rule 4), bottom right. On phones the
 check-in save button leaves room beside it; any new bottom-anchored control must do the same.

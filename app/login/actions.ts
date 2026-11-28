@@ -62,10 +62,13 @@ export async function forgotPassword(_: AuthState, form: FormData): Promise<Auth
   const email = await emailFor(identifier);
   if (email) {
     const supabase = await createClient();
-    await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${await origin()}/auth/callback?next=/reset-password` });
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${await origin()}/auth/callback?next=/reset-password` });
+    // Kept out of the reply (it would reveal which accounts exist), but a failed send
+    // must be visible somewhere: this is where an email setup problem shows up.
+    if (error) console.error('[forgotPassword]', error.status, error.code, error.message);
   }
   // Same answer either way.
-  return { info: 'ถ้ามีบัญชีนี้อยู่ เราส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่อีเมลที่ใช้สมัครแล้ว' };
+  return { info: 'ถ้ามีบัญชีนี้อยู่ เราส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่อีเมลที่ใช้สมัครแล้ว ถ้าไม่เห็นภายใน 2–3 นาที ลองดูในกล่องสแปม แล้วค่อยขอใหม่' };
 }
 
 export async function googleAuth() {
