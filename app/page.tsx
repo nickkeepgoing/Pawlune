@@ -9,6 +9,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { TwoWeeks } from '@/components/landing/TwoWeeks';
 import { PhoneCheckin } from '@/components/landing/PhoneFrame';
 import { ToyBox } from '@/components/landing/ToyBox';
+import { SectionNav } from '@/components/landing/SectionNav';
 import { JourneyCalendar } from '@/components/landing/JourneyCalendar';
 import { CountUp, Parallax, ScrollReveal } from '@/components/landing/Motion';
 import { getState } from '@/lib/data';
@@ -154,10 +155,8 @@ export default async function Landing() {
       <header className="sticky top-0 z-40 border-b border-bark/10 bg-cream/90 backdrop-blur">
         <div className={`${WRAP} flex items-center justify-between gap-6 py-3 md:py-4`}>
           <Logo className="text-lg" />
-          <nav aria-label="ลิงก์หลัก" className="flex items-center gap-6 text-sm lg:gap-8">
-            {NAV.map(([href, label]) => (
-              <a key={href} href={href} className="hidden min-h-11 items-center whitespace-nowrap text-bark hover:text-jade lg:flex">{label}</a>
-            ))}
+          <nav aria-label="ลิงก์หลัก" className="flex items-center gap-3 text-sm lg:gap-2">
+            <SectionNav items={NAV} />
             <ThemeToggle />
             <Link href={user ? '/home' : '/login'} className="btn btn-ghost whitespace-nowrap border-jade px-5 text-jade">{user ? 'เข้าแอป' : 'เข้าสู่ระบบ'}</Link>
           </nav>

@@ -49,22 +49,6 @@
   color-scheme: dark;
 }
 
-/* Follow the device until the visitor picks a side themselves. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --c-cream:  #191310;
-    --c-paper:  #241B16;
-    --c-sage:   #3C4F40;
-    --c-jade:   #8FB79A;
-    --c-bark:   #C2AB92;
-    --c-cocoa:  #F4EADC;
-    --c-honey:  #E0A866;
-    --c-line:   rgba(244, 234, 220, .16);
-    --c-shadow: rgba(0, 0, 0, .65);
-    color-scheme: dark;
-  }
-}
-
 html { background: var(--color-cream); color: var(--color-cocoa); font-size: clamp(16px, 15px + 0.25vw, 18px); }
 
 /* Responsive shell: phone -> tablet -> desktop. Pages are narrow by default (forms, reading);

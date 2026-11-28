@@ -8,9 +8,8 @@ export const THEME_INIT = `(function(){try{var t=localStorage.getItem('pawlune-t
 
 function current(): Choice {
   if (typeof document === 'undefined') return 'light';
-  const set = document.documentElement.dataset.theme;
-  if (set === 'light' || set === 'dark') return set;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  // Light unless the visitor has switched: the device setting is deliberately not followed.
+  return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
 }
 
 export function ThemeToggle({ className = '' }: { className?: string }) {
