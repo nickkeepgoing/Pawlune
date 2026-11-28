@@ -6,9 +6,10 @@ import { Logo } from '@/components/Logo';
 import { DogTuaDaeng } from '@/components/Pets';
 import { CatFace, PawPrint, PeekCat, coatFor } from '@/components/Critters';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { HeroTrial } from '@/components/hero/HeroTrial';
+import { TwoWeeks } from '@/components/landing/TwoWeeks';
 import { PhoneCheckin } from '@/components/landing/PhoneFrame';
 import { ToyBox } from '@/components/landing/ToyBox';
+import { JourneyCalendar } from '@/components/landing/JourneyCalendar';
 import { CountUp, Parallax, ScrollReveal } from '@/components/landing/Motion';
 import { getState } from '@/lib/data';
 import { matchAnimal, type AnimalLite, type Prefs } from '@/lib/engine';
@@ -91,6 +92,23 @@ const RULES = [
   'ขนาด ช่วงวัย พลังงาน และนิสัยที่คุณมองหา',
   'ความพร้อมเรื่องค่าใช้จ่ายและความเห็นของคนในบ้าน',
 ] as const;
+
+/** Mirrors what app/(app)/shelter/page.tsx actually loads. Change them together. */
+const SHELTER_STEPS = [
+  ['ก่อนอนุมัติ', 'ดูความพร้อม', 'บ้าน เวลาว่าง งบ อาการแพ้ และสัตว์เดิมในบ้าน'],
+  ['ระหว่าง 14 วัน', 'รู้เรื่องน้อง', 'ผู้เลี้ยงแจ้งปัญหาได้ทุกเมื่อ ศูนย์ช่วยได้ตั้งแต่ยังเล็ก'],
+  ['จบการทดลอง', 'รู้ผลตัดสินใจ', 'รับเป็นครอบครัว ขอคืน หรือยังไม่แน่ใจ'],
+] as const;
+const SHELTER_SEES = ['คำตอบเรื่องความพร้อมของบ้าน', 'ข้อตกลง แผนคืนน้อง และผู้ติดต่อฉุกเฉิน', 'ความคิดเห็นและปัญหาที่คุณส่งเรื่องน้อง'] as const;
+const SHELTER_NEVER = ['อารมณ์ที่คุณบันทึกรายวัน', 'โน้ตส่วนตัวของคุณ', 'คะแนน WHO-5 และ ST-5'] as const;
+
+const ShelterIcon = ({ k }: { k: number }) => (
+  <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    {k === 0 && <><rect x="5" y="4" width="14" height="17" rx="2" /><path d="M9 4V3h6v1M9 11l2 2 4-4M9 17h6" /></>}
+    {k === 1 && <><path d="M4 5h16v11H9l-5 4Z" /><path d="M8 9h8M8 12h5" /></>}
+    {k === 2 && <><path d="M4 11 12 4l8 7v9H4Z" /><path d="m9 15 2 2 4-4" /></>}
+  </svg>
+);
 
 export default async function Landing() {
   const { user } = await getState();
@@ -279,16 +297,16 @@ export default async function Landing() {
       </section>
 
       {/* ---- 4. Experience the product ---- */}
-      <div className="bg-paper py-16 md:py-20">
+      <div className="bg-paper py-10 md:py-12">
         <div className={WRAP}>
-          <h2 className="text-2xl font-bold md:text-4xl">ลองเล่นดูว่า 14 วันเป็นยังไง</h2>
+          <h2 className="text-2xl font-bold md:text-4xl">สองสัปดาห์แรกเป็นยังไง</h2>
           <p className="mt-3 max-w-[58ch] text-bark">
-            ลากดูตัวอย่างว่าสองสัปดาห์แรกอาจเป็นยังไง ส่วนที่ลากได้นี้ทำไว้เล่าเรื่องบนหน้านี้ ส่วนหน้าจอที่ใช้จริงในแอปสรุปไว้ด้านล่าง
+            ตัวอย่างของแมวที่ย้ายบ้านใหม่ แต่ละตัวใช้เวลาไม่เท่ากัน
           </p>
         </div>
 
-        <div className="mt-10">
-          <HeroTrial />
+        <div className="mt-5">
+          <TwoWeeks />
         </div>
 
         <div className={`${WRAP} mt-10`}>
@@ -411,64 +429,79 @@ export default async function Landing() {
         </div>
       </section>
 
-      {/* ---- 6. For shelters ---- */}
+      {/* ---- 6. For shelters: three moments, then what is and is not shared. ---- */}
       <div id="shelters" className="scroll-mt-20 bg-paper py-16 md:py-20">
         <div className={WRAP}>
-          <h2 className="text-2xl font-bold md:text-4xl">ข้อมูลที่ดีขึ้น การรับเลี้ยงที่รับผิดชอบขึ้น</h2>
-          <p className="mt-3 max-w-[58ch] text-bark">สำหรับศูนย์พักพิงและเครือข่ายบ้านพักชั่วคราว</p>
+          <h2 className="text-2xl font-bold md:text-4xl">สำหรับศูนย์พักพิง</h2>
+          <p className="mt-2 text-lg text-bark">รู้จักคนรับเลี้ยงก่อนส่งน้องไป และรู้ว่าน้องเป็นยังไงหลังจากนั้น</p>
 
-          <ul className="mt-8 grid gap-4 md:grid-cols-2">
-            {[
-              ['เห็นความพร้อมก่อนอนุมัติ', 'ผู้ขอทดลองเลี้ยงตอบเรื่องบ้าน เวลา ค่าใช้จ่าย และอาการแพ้ไว้แล้ว ศูนย์เห็นก่อนตัดสินใจ'],
-              ['ติดต่อกันได้ระหว่าง 14 วัน', 'ศูนย์เห็นความเป็นอยู่ของน้องที่ผู้เลี้ยงแจ้ง และเข้าไปช่วยได้ตั้งแต่ปัญหายังเล็ก'],
-              ['ผลลัพธ์ที่บันทึกไว้', 'ทุกการทดลองจบด้วยการตัดสินใจที่ชัดเจน รับเป็นครอบครัว คืน หรือขอคุยต่อ'],
-              ['ความยินยอมมาก่อนเสมอ', 'ศูนย์เห็นเฉพาะสิ่งที่ผู้ใช้ยินยอมให้เห็น ไม่เห็นบันทึกอารมณ์หรือคะแนนสุขภาวะทางใจ'],
-            ].map(([t, b]) => (
-              <li key={t} className="card">
-                <h3 className="font-bold">{t}</h3>
-                <p className="mt-1 text-sm text-bark">{b}</p>
+          <ol className="mt-10 grid gap-4 md:grid-cols-3">
+            {SHELTER_STEPS.map(([when, title, body], i) => (
+              <li key={when} data-reveal style={vars({ '--d': `${i * 160}ms` })} className="rounded-[1.5rem] bg-cream p-6 shadow-[0_22px_40px_-28px_var(--c-shadow)]">
+                <span className="grid h-14 w-14 place-items-center rounded-2xl bg-sage/50 text-jade"><ShelterIcon k={i} /></span>
+                <p className="mt-4 text-sm font-semibold text-jade">{when}</p>
+                <h3 className="text-xl font-bold">{title}</h3>
+                <p className="mt-1 text-bark">{body}</p>
               </li>
             ))}
-          </ul>
+          </ol>
+
+          <h3 className="mt-12 text-xl font-bold">ความเป็นส่วนตัวของผู้รับเลี้ยง</h3>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div data-reveal className="rounded-[1.5rem] bg-sage/30 p-6">
+              <p className="text-lg font-bold text-jade">ศูนย์เห็น</p>
+              <ul className="mt-3 space-y-2.5">
+                {SHELTER_SEES.map((t) => (
+                  <li key={t} className="flex items-start gap-3">
+                    <span aria-hidden className="grid h-6 w-6 shrink-0 translate-y-0.5 place-items-center rounded-full bg-jade text-sm font-bold text-cream">✓</span>{t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div data-reveal style={vars({ '--d': '140ms' })} className="rounded-[1.5rem] border-2 border-dashed border-bark/30 p-6">
+              <p className="text-lg font-bold">ศูนย์ไม่เห็น</p>
+              <ul className="mt-3 space-y-2.5">
+                {SHELTER_NEVER.map((t) => (
+                  <li key={t} className="flex items-start gap-3">
+                    <span aria-hidden className="grid h-6 w-6 shrink-0 translate-y-0.5 place-items-center rounded-full bg-bark/20 text-sm font-bold">✕</span>{t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* ---- 7. Impact ---- */}
-      <section className={`${WRAP} py-16 md:py-20`}>
+      {/* ---- 7. Impact, told on a calendar the visitor can tap through. ---- */}
+      <section className={`${WRAP} py-14 md:py-20`}>
         <h2 className="text-2xl font-bold md:text-4xl">ทุกการรับเลี้ยงควรได้เริ่มต้นที่ดีกว่านี้</h2>
-        <p className="mt-3 max-w-[58ch] text-bark">
-          นี่คือผลที่เราตั้งใจให้เกิด ยังไม่ใช่ผลที่วัดได้ เพราะ Pawlune ยังอยู่ในช่วงนำร่องและยังไม่มีข้อมูลจากการใช้งานจริง
+        <p className="mb-8 mt-3 max-w-[58ch] text-bark">
+          แตะวันในปฏิทินเพื่อดูว่าแต่ละช่วงเกิดอะไรขึ้น เป้าหมายเหล่านี้คือสิ่งที่เราตั้งใจ ยังไม่ใช่ผลที่วัดได้ เพราะยังอยู่ในช่วงนำร่อง
         </p>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {[
-            ['ตัดสินใจโดยมีข้อมูล', 'คนรับเลี้ยงรู้ว่าตัวเองพร้อมแค่ไหนก่อนพาน้องกลับบ้าน'],
-            ['ช่วงปรับตัวที่มีคนช่วย', 'สองสัปดาห์แรกไม่ต้องเดาเอาเองอีกต่อไป'],
-            ['การเลี้ยงระยะยาวที่รับผิดชอบ', 'รู้ค่าใช้จ่ายจริงและรู้ว่าเมื่อไรต้องขอความช่วยเหลือ'],
-          ].map(([t, b]) => (
-            <div key={t} className="rounded-[var(--radius-card)] border-[1.5px] border-dashed border-bark/30 p-5">
-              <h3 className="font-bold">{t}</h3>
-              <p className="mt-1 text-sm text-bark">{b}</p>
-            </div>
-          ))}
-        </div>
+        <JourneyCalendar />
 
-        <div className="mt-10 grid gap-8 md:grid-cols-2">
-          <div>
+        <div className="mt-12 grid gap-4 md:grid-cols-2">
+          <div data-reveal className="rounded-[1.5rem] border-2 border-dashed border-bark/30 p-6">
             <h3 className="text-xl font-bold">สิ่งที่เราไม่สัญญา</h3>
-            <ul className="mt-3 list-disc space-y-1 pl-5 text-bark">
-              <li>14 วันไม่ได้รับประกันว่าจะเข้ากันได้</li>
-              <li>สัตว์เลี้ยงไม่ใช่บริการด้านสุขภาพจิต งานวิจัยยังได้ผลหลายทาง</li>
-              <li>เรายังไม่มีข้อมูลนำร่องว่าลดการคืนได้เท่าไร</li>
+            <ul className="mt-3 space-y-2.5">
+              {['14 วันไม่ได้รับประกันว่าจะเข้ากันได้', 'สัตว์เลี้ยงไม่ใช่บริการด้านสุขภาพจิต งานวิจัยยังได้ผลหลายทาง', 'เรายังไม่มีข้อมูลนำร่องว่าลดการคืนได้เท่าไร'].map((t) => (
+                <li key={t} className="flex items-start gap-3">
+                  <span aria-hidden className="grid h-6 w-6 shrink-0 translate-y-0.5 place-items-center rounded-full bg-bark/20 text-sm font-bold">✕</span>{t}
+                </li>
+              ))}
             </ul>
-            <Link href="/learn" className="mt-3 inline-block font-semibold text-jade underline underline-offset-4">งานวิจัยพูดว่าอะไร</Link>
+            <Link href="/learn" className="mt-4 inline-block font-semibold text-jade underline underline-offset-4">งานวิจัยพูดว่าอะไร</Link>
           </div>
-          <div>
+          <div data-reveal style={vars({ '--d': '140ms' })} className="rounded-[1.5rem] bg-sage/30 p-6">
             <h3 className="text-xl font-bold">ข้อมูลของคุณเป็นของคุณ</h3>
-            <p className="mt-3 text-bark">
-              ศูนย์เห็นเฉพาะความพร้อม ข้อตกลง และสิ่งที่คุณแจ้งเรื่องน้อง ไม่เห็นบันทึกอารมณ์หรือคะแนนสุขภาวะทางใจ
-              ลบข้อมูลทั้งหมดได้ในปุ่มเดียว
-            </p>
+            <ul className="mt-3 space-y-2.5">
+              {['ศูนย์เห็นเฉพาะความพร้อม ข้อตกลง และเรื่องที่คุณแจ้ง', 'ศูนย์ไม่เห็นบันทึกอารมณ์หรือคะแนนสุขภาวะทางใจ', 'ลบข้อมูลทั้งหมดได้จากหน้าตั้งค่า'].map((t) => (
+                <li key={t} className="flex items-start gap-3">
+                  <span aria-hidden className="grid h-6 w-6 shrink-0 translate-y-0.5 place-items-center rounded-full bg-jade text-sm font-bold text-cream">✓</span>{t}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>

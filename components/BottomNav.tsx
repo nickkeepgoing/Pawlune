@@ -20,40 +20,49 @@ const ITEMS = [
 
 function isActive(path: string, href: string) { return path === href || path.startsWith(href + '/'); }
 
-/** Desktop: the same five in the header. The daily action keeps its weight here too. */
+/**
+ * Desktop: the four places sit together in one tray, with the current one raised.
+ * The daily action is not a place, so it lives apart as a button (RecordButton).
+ */
 export function TopNav() {
   const path = usePathname();
   return (
-    /* Takes over from the bottom bar at 768px: a bar pinned to the bottom of a
-       desktop window reads as a phone app stuck in a browser. Labels appear once
-       there is room for them. */
-    <nav className="no-print hidden flex-1 md:block" aria-label="เมนูหลัก">
-      <ul className="flex items-center justify-center gap-1">
-        {ITEMS.map(({ href, label, Icon, ...rest }) => {
+    <nav className="no-print hidden flex-1 justify-center md:flex" aria-label="เมนูหลัก">
+      <ul className="flex items-center gap-1 rounded-full border border-bark/10 bg-paper p-1 shadow-[0_8px_20px_-16px_var(--c-shadow)]">
+        {ITEMS.filter((i) => !('primary' in i)).map(({ href, label, Icon }) => {
           const active = isActive(path, href);
-          const primary = 'primary' in rest && rest.primary;
           return (
             <li key={href}>
               <Link
                 href={href}
                 aria-current={active ? 'page' : undefined}
-                className={
-                  primary
-                    ? 'mx-2 flex min-h-11 items-center gap-1.5 rounded-full bg-jade px-4 text-sm font-semibold text-cream lg:px-5'
-                    : `flex min-h-11 items-center gap-1.5 rounded-full px-3.5 text-sm ${active ? 'font-semibold text-jade' : 'text-bark hover:text-cocoa'}`
-                }
+                title={label}
+                className={`flex min-h-10 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-sm transition-colors lg:px-4 ${
+                  active ? 'bg-sage/60 font-semibold text-cocoa' : 'text-bark hover:bg-cream hover:text-cocoa'
+                }`}
               >
                 <Icon className="h-5 w-5" />
-                {/* Tablet widths have room for the icons but not five Thai labels. */}
-                <span className={primary ? undefined : 'hidden lg:inline'}>{label}</span>
-                <span className="sr-only lg:hidden">{label}</span>
-                {active && !primary && <span className="ml-0.5 h-1.5 w-1.5 rounded-full bg-honey" aria-hidden />}
+                {/* Narrow desktop windows name only the current place; the rest keep their icon. */}
+                <span className={active ? undefined : 'sr-only lg:not-sr-only'}>{label}</span>
               </Link>
             </li>
           );
         })}
       </ul>
     </nav>
+  );
+}
+
+export function RecordButton() {
+  const here = usePathname() === '/checkin';
+  return (
+    /* The wrapper does the hiding: .btn sets its own display, which would beat "hidden". */
+    <span className="hidden md:block">
+      <Link href="/checkin" aria-current={here ? 'page' : undefined} className="btn btn-primary whitespace-nowrap px-4 text-sm">
+        <IconPen className="h-5 w-5" />
+        <span>บันทึก<span className="hidden xl:inline">วันนี้</span></span>
+      </Link>
+    </span>
   );
 }
 
@@ -77,7 +86,7 @@ export function BottomNav() {
                   aria-current={active ? 'page' : undefined}
                   className="-mt-5 flex min-h-14 w-full flex-col items-center justify-end gap-1 pb-1.5 text-xs font-semibold text-jade"
                 >
-                  <span className="grid h-12 w-12 place-items-center rounded-full bg-jade text-cream shadow-[0_6px_0_color-mix(in_srgb,var(--color-jade)_72%,#000)]">
+                  <span className="grid h-14 w-14 place-items-center rounded-full bg-jade text-cream ring-4 ring-paper">
                     <Icon className="h-6 w-6" />
                   </span>
                   {label}
@@ -91,10 +100,11 @@ export function BottomNav() {
               <Link
                 href={href}
                 aria-current={active ? 'page' : undefined}
-                className={`relative flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs ${active ? 'font-semibold text-jade' : 'text-bark'}`}
+                className={`flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs ${active ? 'font-semibold text-jade' : 'text-bark'}`}
               >
-                {active && <span className="absolute top-1 h-1 w-6 rounded-full bg-honey" aria-hidden />}
-                <Icon className="h-6 w-6" />
+                <span className={`grid h-8 w-14 place-items-center rounded-full transition-colors ${active ? 'bg-sage/55' : ''}`}>
+                  <Icon className="h-6 w-6" />
+                </span>
                 {label}
               </Link>
             </li>

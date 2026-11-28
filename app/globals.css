@@ -109,9 +109,9 @@ body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-co
 /* ---------- Playful layer: small reactions to what the person does ---------- */
 .btn { transition: transform .15s ease, background-color .15s ease, box-shadow .15s ease; }
 .btn:active { transform: scale(.96); }
-.btn-primary { box-shadow: 0 4px 0 color-mix(in srgb, var(--color-jade) 72%, #000); }
+.btn-primary { box-shadow: 0 8px 16px -10px var(--c-shadow); }
 .btn-primary:hover { background: color-mix(in srgb, var(--color-jade) 88%, var(--color-cocoa)); }
-.btn-primary:active { box-shadow: 0 1px 0 color-mix(in srgb, var(--color-jade) 72%, #000); transform: translateY(3px); }
+.btn-primary:active { box-shadow: none; }
 
 /* Selected chip shows a paw instead of relying on colour alone */
 .chip:has(:checked)::before, .chip[aria-pressed="true"]::before {
@@ -195,29 +195,6 @@ body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-co
 }
 @supports not (animation-timeline: view()) { .track-fill-y { display: none } }
 
-/* ---- Hero day scrubber ------------------------------------------------------
-   Styled on both engines; the thumb is a 44px target even though it looks small. */
-.day-scrub { -webkit-appearance: none; appearance: none; background: transparent; height: 44px; cursor: grab; }
-.day-scrub:active { cursor: grabbing; }
-.day-scrub::-webkit-slider-runnable-track {
-  height: 6px; border-radius: 999px;
-  background: linear-gradient(to right, var(--color-jade) var(--p, 0%), color-mix(in srgb, var(--color-bark) 18%, transparent) var(--p, 0%));
-}
-.day-scrub::-moz-range-track { height: 6px; border-radius: 999px; background: color-mix(in srgb, var(--color-bark) 18%, transparent); }
-.day-scrub::-moz-range-progress { height: 6px; border-radius: 999px; background: var(--color-jade); }
-.day-scrub::-webkit-slider-thumb {
-  -webkit-appearance: none; appearance: none; margin-top: -9px;
-  width: 24px; height: 24px; border-radius: 999px; background: var(--color-jade);
-  border: 5px solid var(--color-paper); box-shadow: 0 0 0 1.5px var(--color-jade), 0 4px 10px -3px var(--c-shadow);
-}
-.day-scrub::-moz-range-thumb {
-  width: 24px; height: 24px; border-radius: 999px; background: var(--color-jade);
-  border: 5px solid var(--color-paper); box-shadow: 0 0 0 1.5px var(--color-jade);
-}
-.day-scrub:focus-visible { outline: none; }
-.day-scrub:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 1.5px var(--color-jade), 0 0 0 6px color-mix(in srgb, var(--color-jade) 35%, transparent); }
-.day-scrub:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 1.5px var(--color-jade), 0 0 0 6px color-mix(in srgb, var(--color-jade) 35%, transparent); }
-
 /* =============================================================================
    Shared surfaces — the layer every screen is built from.
 
@@ -282,13 +259,13 @@ body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-co
 .reveal-ready { opacity: 0; transform: translateY(26px) scale(.98); }
 .reveal-ready.reveal-in {
   opacity: 1; transform: none;
-  transition: opacity .6s ease, transform .7s cubic-bezier(.2,.9,.3,1.2);
-  transition-delay: var(--d, 0ms);
+  transition: opacity .25s ease, transform .3s ease-out;
+  transition-delay: calc(var(--d, 0ms) * .3);
 }
 /* The line between two stages draws itself after its stage arrives. */
 .stage-line { transform-origin: left; }
 .reveal-ready .stage-line { transform: scaleX(0); }
-.reveal-ready.reveal-in .stage-line { transform: scaleX(1); transition: transform .5s ease; transition-delay: calc(var(--d, 0ms) + 300ms); }
+.reveal-ready.reveal-in .stage-line { transform: scaleX(1); transition: transform .3s ease; transition-delay: calc(var(--d, 0ms) * .3 + 100ms); }
 
 /* Stacked layers that shift by different amounts under the pointer. */
 .depth {
@@ -303,3 +280,18 @@ body { font-family: var(--font-thai); line-height: 1.6; -webkit-tap-highlight-co
 .zoom-photo:hover img { transform: scale(1.07); }
 
 @media print { .reveal-ready { opacity: 1; transform: none; } }
+
+/* Utility classes cannot override .chip (unlayered), so the chosen state is set here. */
+.chip:has(:checked) { background: var(--color-sage); border-color: var(--color-jade); border-width: 2px; font-weight: 600; }
+
+/* ---- Loading and progress ---------------------------------------------------- */
+@keyframes shimmer { from { background-position: 200% 0 } to { background-position: -200% 0 } }
+.shimmer {
+  background: linear-gradient(100deg, color-mix(in srgb, var(--color-bark) 9%, transparent) 40%, color-mix(in srgb, var(--color-sage) 38%, transparent) 50%, color-mix(in srgb, var(--color-bark) 9%, transparent) 60%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@keyframes paw-step { 0% { opacity: .15; transform: scale(.8) } 30% { opacity: 1; transform: scale(1.1) } 70%, 100% { opacity: .15; transform: scale(.8) } }
+.paw-step { display: inline-block; animation: paw-step 1.2s ease-in-out infinite; }
+@keyframes chapter-fill { from { width: 0 } to { width: 100% } }
+.chapter-fill { animation-name: chapter-fill; animation-timing-function: linear; animation-fill-mode: both; }

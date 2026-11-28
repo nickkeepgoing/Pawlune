@@ -39,10 +39,12 @@ export const getState = cache(async () => {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { supabase, user: null, profile: null, pet: null } as const;
-  const [{ data: profile }, { data: pet }] = await Promise.all([
+  const [{ data: profile, error: profileError }, { data: pet }] = await Promise.all([
     supabase.from('profiles').select('id, display_name, consent_version, consented_at, age_confirmed_20plus, is_demo, username, avatar_path, avatar_animal, is_shelter, seeking_pet, shelter_id').eq('id', user.id).maybeSingle(),
     supabase.from('pets').select('*').eq('user_id', user.id).eq('is_current', true).order('created_at', { ascending: false }).limit(1).maybeSingle(),
   ]);
+  // A missing column makes this whole select fail, which silently looks like "no profile".
+  if (profileError) console.error('[getState] profile query failed:', profileError.message);
   return { supabase, user, profile: profile as Profile | null, pet: pet as Pet | null } as const;
 });
 

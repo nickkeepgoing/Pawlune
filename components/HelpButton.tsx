@@ -36,8 +36,15 @@ export function HelpButton() {
   }, []);
   return (
     <>
-      <button onClick={() => setOpen(true)} className="no-print inline-flex min-h-11 items-center gap-1.5 rounded-full border-[1.5px] border-jade bg-paper px-3 text-sm font-semibold text-jade">
-        <IconChat className="h-4 w-4" /> ต้องการคนรับฟัง
+      {/* Floats on every signed-in screen (CLAUDE.md rule 4): always visible, never in the header's way. */}
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-haspopup="dialog"
+        className={`no-print fixed right-3 z-30 inline-flex min-h-12 items-center gap-2 whitespace-nowrap rounded-full bg-paper py-1.5 pl-1.5 pr-4 text-sm font-semibold text-cocoa shadow-[0_14px_28px_-10px_var(--c-shadow)] ring-1 ring-jade/30 transition-transform hover:-translate-y-0.5 active:translate-y-0 md:bottom-6 md:right-6 bottom-[5.5rem]`}
+      >
+        <span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-jade text-cream"><IconChat className="h-5 w-5" /></span>
+        ต้องการคนรับฟัง
       </button>
       <HelpSheet open={open} onClose={() => setOpen(false)} />
     </>

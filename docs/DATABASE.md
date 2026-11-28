@@ -1,6 +1,6 @@
 # DATABASE.md
 
-Apply migrations in order: `0001_init.sql` → `0003_username_avatar.sql` → `0004_trial.sql` → `0005_cat_first.sql` → `0006_grants.sql`. The final migration grants PostgREST table privileges; RLS policies remain the authorization boundary.
+Apply migrations in order: `0001_init.sql` → `0003_username_avatar.sql` → `0004_trial.sql` → `0005_cat_first.sql` → `0006_grants.sql` → `0007_animal_photos.sql`. 0006 grants PostgREST table privileges; RLS policies remain the authorization boundary.
 
 | Table | Purpose | Notes |
 |---|---|---|

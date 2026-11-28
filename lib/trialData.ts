@@ -6,6 +6,7 @@ export interface Animal {
   id: string; shelter_id: string; name: string; species: 'dog' | 'cat'; sex: 'm' | 'f' | null;
   age_group: string | null; size: string | null; energy: string | null; personality: string | null;
   needs_fence: boolean; max_hours_alone: number | null; good_with: string[]; story: string | null; status: string; is_demo: boolean;
+  photo_url?: string | null; // 0007
   // Known history disclosed by the shelter (0005)
   indoor_ok: boolean; ok_with_cats: 'yes' | 'no' | 'unknown'; ok_with_dogs: 'yes' | 'no' | 'unknown';
   vaccinated: boolean | null; neutered: boolean | null; health_notes: string | null; behavior_notes: string | null;

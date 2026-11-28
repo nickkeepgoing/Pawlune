@@ -31,3 +31,10 @@
 - Shelter animals in the demo are fictional and labelled; the real BKK shelter is shown only as a sourced contact card.
 - Demo account: has 60 days of logs for Patterns plus a trial that started 13 days ago (today = day 14). Shelter staff demo login: username `shelter`.
 - `is_shelter` / `is_demo` can only be changed with the service role (trigger in 0004). To make a real staff account: run `update profiles set is_shelter = true where username = '...'` in the SQL editor.
+
+## Hosting region
+Supabase is in ap-northeast-2 (Seoul), so `vercel.json` pins server functions to `icn1`. If the database ever moves, move this with it.
+
+## Help button
+"ต้องการคนรับฟัง" is a floating button on every signed-in screen (CLAUDE.md rule 4), bottom right. On phones the
+check-in save button leaves room beside it; any new bottom-anchored control must do the same.

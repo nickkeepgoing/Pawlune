@@ -7,14 +7,16 @@ import { matchAnimal } from '@/lib/engine';
 
 const pick = (v: FormDataEntryValue | null, ok: string[]) => (v && ok.includes(String(v)) ? String(v) : null);
 
-export async function savePrefs(form: FormData) {
+export async function savePrefs(form: FormData): Promise<{ error: string } | void> {
   const { supabase, user } = await getState();
   if (!user) redirect('/');
   const list = (k: string, ok: string[]) => form.getAll(k).map(String).filter((x) => ok.includes(x));
   const num = (k: string, max: number) => { const n = Number(form.get(k)); return Number.isFinite(n) && n >= 0 && n <= max ? Math.round(n) : null; };
-  await supabase.from('adopt_preferences').upsert({
+  const species = list('species', ['dog', 'cat']);
+  if (!species.length) return { error: 'เลือกก่อนว่าอยากได้แมว หมา หรือทั้งสองอย่าง' };
+  const { error } = await supabase.from('adopt_preferences').upsert({
     user_id: user.id,
-    species: list('species', ['dog', 'cat']),
+    species,
     allergies: list('allergies', ['dog', 'cat']),
     size: pick(form.get('size'), ['small', 'medium', 'large', 'any']),
     age_group: pick(form.get('age_group'), ['young', 'adult', 'senior', 'any']),
@@ -33,8 +35,13 @@ export async function savePrefs(form: FormData) {
     existing_pets: list('existing_pets', ['cat', 'dog', 'other']),
     updated_at: new Date().toISOString(),
   });
+  if (error) {
+    // Never move on silently: a swallowed error here looked like a button that did nothing.
+    console.error('[savePrefs]', error.code, error.message);
+    return { error: 'บันทึกคำตอบไม่สำเร็จ คำตอบของคุณยังอยู่บนหน้านี้ ลองกดอีกครั้ง ถ้ายังไม่ได้ให้แจ้งผู้ดูแลระบบ' };
+  }
   revalidatePath('/adopt');
-  redirect('/adopt');
+  redirect('/adopt?saved=1');
 }
 
 const AGREE = ['ready', 'share', 'costs', 'emergency', 'transport', 'return_ok'] as const;
@@ -59,7 +66,11 @@ export async function applyForTrial(form: FormData) {
   const { data: open } = await supabase.from('trials').select('id').eq('user_id', user.id).in('status', ['applied', 'active', 'return_requested']).limit(1);
   if (open?.length) redirect('/trial');
   const now = new Date().toISOString();
-  await supabase.from('trials').insert({ user_id: user.id, animal_id: animalId, status: 'applied', share_consent_at: now, agreed_at: now, return_plan: returnPlan, emergency_contact: contact });
+  const { error } = await supabase.from('trials').insert({ user_id: user.id, animal_id: animalId, status: 'applied', share_consent_at: now, agreed_at: now, return_plan: returnPlan, emergency_contact: contact });
+  if (error) {
+    console.error('[applyForTrial]', error.code, error.message);
+    redirect(`/adopt/${animalId}?need=save#apply`);
+  }
   revalidatePath('/', 'layout');
   redirect('/trial');
 }

@@ -3,9 +3,10 @@ import { requireStage } from '@/lib/guard';
 import { LABEL, loadAnimals, loadPrefs, loadTrial } from '@/lib/trialData';
 import { rankMatches } from '@/lib/engine';
 import { PrefsForm } from './PrefsForm';
-import { AnimalFace, PawPrint } from '@/components/Critters';
+import { PawPrint } from '@/components/Critters';
+import { AnimalPhoto } from '@/components/AnimalPhoto';
 
-export default async function AdoptPage({ searchParams }: { searchParams: Promise<{ edit?: string }> }) {
+export default async function AdoptPage({ searchParams }: { searchParams: Promise<{ edit?: string; saved?: string }> }) {
   await requireStage('ready');
   const sp = await searchParams;
   const [prefs, { animals, shelters }, { trial }] = await Promise.all([loadPrefs(), loadAnimals(), loadTrial()]);
@@ -29,29 +30,34 @@ export default async function AdoptPage({ searchParams }: { searchParams: Promis
       {trial && trial.status !== 'adopted' && (
         <Link href="/trial" className="block rounded-[var(--radius-card)] bg-jade p-4 text-cream"><b>คุณมีคำขอ/การทดลองเลี้ยงอยู่แล้ว</b><span className="block text-sm">ดูสถานะ</span></Link>
       )}
+      {sp.saved && <p role="status" className="card font-semibold">บันทึกความพร้อมแล้ว</p>}
       {anyDemo && <p className="rounded-lg bg-honey/30 px-3 py-2 text-sm">รายชื่อสัตว์ด้านล่างเป็นข้อมูลจำลองสำหรับสาธิต ระหว่างรอความร่วมมือกับศูนย์จริง</p>}
-      <p className="text-sm text-bark">เจอ <span className="num font-semibold">{ranked.length}</span> ตัวที่เข้ากับคุณ{excluded > 0 && <> ซ่อน <span className="num">{excluded}</span> ตัวที่ไม่ปลอดภัยหรือไม่ตรงเงื่อนไข เช่น ชนิดที่คุณแพ้ หรือไม่เข้ากับสัตว์เดิมในบ้าน</>}</p>
-      <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-        {ranked.map((a) => (
-          <li key={a.id}>
-            <Link href={`/adopt/${a.id}`} className="card lift block h-full">
-              <div className="flex items-center gap-3">
-                <div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-cream"><AnimalFace id={a.name} species={a.species} className="h-14 w-14" /></div>
-                <div className="min-w-0">
-                  <p className="text-lg font-bold">{a.name}</p>
-                  <p className="text-sm text-bark">{LABEL.species[a.species]}{a.sex && ` ${LABEL.sex[a.sex]}`} {a.age_group && LABEL.age_group[a.age_group]}</p>
-                  <p className="truncate text-xs text-bark">{shelterName(a.shelter_id)}</p>
-                </div>
+      {animals.length === 0 ? (
+        // Say that the list itself is empty, rather than implying the person's answers ruled everyone out.
+        <p className="card card-warn">ตอนนี้ยังไม่มีสัตว์จากศูนย์ในระบบ คำตอบของคุณบันทึกไว้แล้ว กลับมาดูได้เมื่อศูนย์ลงข้อมูล</p>
+      ) : (
+        <p className="text-sm text-bark">เจอ <span className="num font-semibold">{ranked.length}</span> ตัวที่เข้ากับคุณ{excluded > 0 && <> ซ่อน <span className="num">{excluded}</span> ตัวที่ไม่ปลอดภัยหรือไม่ตรงเงื่อนไข เช่น ชนิดที่คุณแพ้ หรือไม่เข้ากับสัตว์เดิมในบ้าน</>}</p>
+      )}
+      <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {ranked.map((a, i) => (
+          <li key={a.id} className="rise-in" style={{ animationDelay: `${Math.min(i, 6) * 90}ms` }}>
+            <Link href={`/adopt/${a.id}`} className="zoom-photo group flex h-full flex-col overflow-hidden rounded-3xl bg-paper shadow-[0_22px_40px_-28px_var(--c-shadow)] ring-1 ring-bark/10 transition-transform hover:-translate-y-1">
+              <AnimalPhoto animal={a} className="aspect-[4/3]" priority={i === 0} />
+              <div className="flex flex-1 flex-col p-4">
+                <p className="text-xl font-bold">{a.name}</p>
+                <p className="text-sm text-bark">{LABEL.species[a.species]}{a.sex && ` ${LABEL.sex[a.sex]}`} {a.age_group && LABEL.age_group[a.age_group]}</p>
+                <p className="truncate text-xs text-bark">{shelterName(a.shelter_id)}</p>
+                <ul className="mt-3 space-y-1 text-sm">
+                  {a.match.fits.map((f) => <li key={f} className="flex items-start gap-1.5"><PawPrint className="mt-1 h-3.5 w-3.5 shrink-0 text-jade" /><span className="sr-only">เข้ากัน: </span>{f}</li>)}
+                  {a.match.cautions.map((c) => <li key={c} className="flex items-start gap-1.5 text-bark"><span className="grid h-4 w-4 shrink-0 translate-y-1 place-items-center rounded-full bg-honey/40 text-[10px] font-bold" aria-hidden>!</span><span className="sr-only">ระวัง: </span>{c}</li>)}
+                </ul>
+                <span className="mt-auto pt-3 text-sm font-semibold text-jade">ดูประวัติของ{a.name}</span>
               </div>
-              <ul className="mt-3 space-y-1 text-sm">
-                {a.match.fits.map((f) => <li key={f} className="flex items-start gap-1.5"><PawPrint className="mt-1 h-3.5 w-3.5 shrink-0 text-jade" /><span className="sr-only">เข้ากัน: </span>{f}</li>)}
-                {a.match.cautions.map((c) => <li key={c} className="flex items-start gap-1.5 text-bark"><span className="grid h-4 w-4 shrink-0 translate-y-1 place-items-center rounded-full bg-honey/40 text-[10px] font-bold" aria-hidden>!</span><span className="sr-only">ระวัง: </span>{c}</li>)}
-              </ul>
             </Link>
           </li>
         ))}
       </ul>
-      {ranked.length === 0 && <p className="card card-quiet">ยังไม่มีตัวที่ตรงเงื่อนไข ลองเปิดตัวเลือกให้กว้างขึ้น หรือรอศูนย์ลงข้อมูลเพิ่ม</p>}
+      {animals.length > 0 && ranked.length === 0 && <p className="card card-quiet">ยังไม่มีตัวที่ตรงเงื่อนไข ลองเปิดตัวเลือกให้กว้างขึ้น หรือรอศูนย์ลงข้อมูลเพิ่ม</p>}
       <section className="card card-quiet text-sm">
         <h2 className="font-semibold">อยากรับเลี้ยงจากศูนย์จริงตอนนี้</h2>
         <p className="mt-1">(สำหรับหมา) ศูนย์ควบคุมสุนัขกรุงเทพมหานคร (ประเวศ) ดูน้องที่รอบ้านได้ที่เพจ Facebook &quot;BKK Adopter&quot; โทร 0 2328 7460, 0 2245 3311 (จ.–ศ. 08.30–16.30 น.)</p>

@@ -4,7 +4,8 @@ import { requireStage } from '@/lib/guard';
 import { LABEL, loadPrefs, type Animal, type Shelter } from '@/lib/trialData';
 import { matchAnimal } from '@/lib/engine';
 import { SubmitButton } from '@/components/SubmitButton';
-import { AnimalFace, PawPrint, PeekCat } from '@/components/Critters';
+import { PawPrint, PeekCat } from '@/components/Critters';
+import { AnimalPhoto } from '@/components/AnimalPhoto';
 import { applyForTrial } from '../actions';
 
 export default async function AnimalPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ need?: string }> }) {
@@ -23,9 +24,9 @@ export default async function AnimalPage({ params, searchParams }: { params: Pro
       <Link href="/adopt" className="text-sm font-semibold text-jade underline underline-offset-4">กลับไปรายชื่อ</Link>
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
         <div className="space-y-4">
-          <section className="page flex items-center gap-4 rounded-[var(--radius-sheet)] border border-bark/20 p-5">
-            <div className="blob grid h-28 w-28 shrink-0 place-items-center bg-sage/45"><AnimalFace id={a.name} species={a.species} className="h-24 w-24" label={`${a.name} ${LABEL.species[a.species]}`} /></div>
-            <div>
+          <section className="overflow-hidden rounded-3xl bg-paper shadow-[0_26px_44px_-30px_var(--c-shadow)] ring-1 ring-bark/10">
+            <AnimalPhoto animal={a} className="aspect-[4/3]" sizes="(min-width: 1024px) 34rem, 100vw" priority />
+            <div className="p-5">
               <h1 className="text-2xl font-bold">{a.name}</h1>
               <p className="text-bark">{LABEL.species[a.species]}{a.sex && ` ${LABEL.sex[a.sex]}`} · {a.age_group && LABEL.age_group[a.age_group]} · ตัว{a.size && LABEL.size[a.size]}</p>
               <p className="text-xs text-bark">{shelter?.name}{a.is_demo && ' · ข้อมูลจำลอง'}</p>
@@ -103,6 +104,7 @@ export default async function AnimalPage({ params, searchParams }: { params: Pro
                 <input name="emergency_contact" required maxLength={100} className="field mt-1" placeholder="ชื่อ และเบอร์โทร" /></label>
               <label className="flex items-start gap-3"><input type="checkbox" name="share" className={tick} /><span>ยินยอมให้ศูนย์เห็นชื่อ ความพร้อม ข้อตกลงนี้ และสิ่งที่ฉันแจ้งเรื่องน้อง <b>ศูนย์ไม่เห็นบันทึกอารมณ์ คะแนน WHO-5 หรือ ST-5 ของฉัน</b></span></label>
               {sp.need === 'home' && <p className="font-semibold" role="alert">กลับไปติ๊ก &quot;ทุกคนในบ้านเห็นด้วย&quot; และ &quot;ถามเรื่องอาการแพ้แล้ว&quot; ในหน้าความพร้อมก่อน <Link href="/adopt?edit=1" className="text-jade underline">แก้ความพร้อม</Link></p>}
+              {sp.need === 'save' && <p className="font-semibold" role="alert">ส่งคำขอไม่สำเร็จ ลองอีกครั้ง ถ้ายังไม่ได้ให้แจ้งผู้ดูแลระบบ</p>}
               {sp.need === '1' && <p className="font-semibold" role="alert">ติ๊กให้ครบทุกข้อ และกรอกแผนคืนกับผู้ติดต่อฉุกเฉินก่อนส่ง</p>}
               <SubmitButton>ขอทดลองเลี้ยง{a.name}</SubmitButton>
             </form>

@@ -5,6 +5,8 @@ import { thaiDate } from '@/lib/format';
 import { LABEL, PROBLEMS } from '@/lib/trialData';
 import { SubmitButton } from '@/components/SubmitButton';
 import { approve, decline, received } from './actions';
+import { AddAnimalForm } from './AddAnimalForm';
+import { AnimalPhoto } from '@/components/AnimalPhoto';
 
 const STATUS: Record<string, string> = { applied: 'รอตรวจคำขอ', active: 'กำลังทดลองเลี้ยง', adopted: 'รับเลี้ยงแล้ว', return_requested: 'รอรับน้องคืน', returned: 'รับคืนแล้ว', declined: 'ไม่อนุมัติ' };
 const PROB_TH = Object.fromEntries(PROBLEMS) as Record<string, string>;
@@ -26,7 +28,7 @@ export default async function ShelterPage({ searchParams }: { searchParams: Prom
   const admin = createAdminClient();
   const [{ data: shelter }, { data: own }] = await Promise.all([
     admin.from('shelters').select('name').eq('id', profile.shelter_id).maybeSingle(),
-    admin.from('shelter_animals').select('id, name, species').eq('shelter_id', profile.shelter_id),
+    admin.from('shelter_animals').select('*').eq('shelter_id', profile.shelter_id).order('name'),
   ]);
   const aids = (own ?? []).map((a) => a.id);
   const { data: trials } = await admin.from('trials').select('id, user_id, animal_id, status, applied_at, start_date, return_plan, emergency_contact, agreed_at, approved_at')
@@ -44,9 +46,26 @@ export default async function ShelterPage({ searchParams }: { searchParams: Prom
   return (
     <div className="wide space-y-4 py-2">
       <div>
-        <h1 className="text-2xl font-bold">คำขอทดลองเลี้ยง: {shelter?.name}</h1>
+        <h1 className="text-2xl font-bold">จัดการศูนย์: {shelter?.name}</h1>
         <p className="text-sm text-bark">เห็นเฉพาะข้อมูลที่ผู้ขอยินยอมให้ศูนย์ ไม่รวมบันทึกอารมณ์และคะแนนสุขภาพใจ</p>
       </div>
+      <AddAnimalForm />
+
+      {(own ?? []).length > 0 && (
+        <section>
+          <h2 className="mb-2 text-lg font-bold">สัตว์ของศูนย์ <span className="num text-bark">{own!.length}</span></h2>
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {own!.map((x) => (
+              <li key={x.id} className="overflow-hidden rounded-2xl bg-paper">
+                <AnimalPhoto animal={x} className="aspect-square" sizes="12rem" />
+                <p className="p-2 text-sm font-semibold">{x.name}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <h2 className="text-lg font-bold">คำขอทดลองเลี้ยง</h2>
       {rows.length === 0 && <p className="rounded-[var(--radius-card)] bg-paper p-4">ยังไม่มีคำขอ</p>}
       <div className="grid gap-4 xl:grid-cols-2">
       {rows.map((t) => {
